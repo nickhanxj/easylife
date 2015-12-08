@@ -16,7 +16,9 @@ import org.apache.struts2.ServletActionContext;
 
 import com.easylife.base.BaseAction;
 import com.easylife.domain.CostRecord;
+import com.easylife.domain.dto.CostRecordDto;
 import com.easylife.service.CostRecordService;
+import com.easylife.service.UserService;
 import com.easylife.util.Page;
 import com.opensymphony.xwork2.ActionContext;
 
@@ -25,6 +27,8 @@ public class CostRecordAction extends BaseAction {
 	private static final long serialVersionUID = 1L;
 	@Resource
 	private CostRecordService recordService;
+	@Resource
+	private UserService userService;
 	private CostRecord record;
 	private String year;
 	private String month;
@@ -35,15 +39,16 @@ public class CostRecordAction extends BaseAction {
 	private String fileName;
 	private File file;
 	private Long recordId;
-	private Integer pageSize = 100;
-	private Integer currentPage = 1;
+	private int page;
+	private int rows;
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
 
 	// 记录列表
 	public String list() {
 		return "list";
 	}
-	
-	public String listData(){
+
+	public String listData() {
 		Map<String, String> params = new HashMap<String, String>();
 		if (StringUtils.isNotBlank(startTime)) {
 			params.put("startTime", startTime);
@@ -57,17 +62,34 @@ public class CostRecordAction extends BaseAction {
 		if (StringUtils.isNotBlank(costFor)) {
 			params.put("costFor", costFor);
 		}
-		Page<CostRecord> all = recordService.selectListByPage(currentPage, pageSize, params);
+		Page<CostRecord> all = recordService.selectListByPage(page, rows,
+				params);
+		List<CostRecordDto> records = new ArrayList<CostRecordDto>();
 		for (CostRecord record : all.getRows()) {
-			if(StringUtils.isNotBlank(record.getAttachment())){
-				String attachment = record.getAttachment();
-				String img = "'<img src='"+attachment.substring(1, attachment.length())+"' width='25px' style='cursor:pointer;'>'";
-				record.setAttachment(img);
+			CostRecordDto recordDto = new CostRecordDto();
+			recordDto.setId(record.getId());
+			recordDto.setCost(record.getCost());
+			recordDto.setCostdate(dateFormat.format(record.getCostdate()));
+			recordDto.setCostFor(record.getCostFor());
+			recordDto.setMark(record.getMark());
+			if(record.getStatus() == 0){
+				recordDto.setStatus("未结");
+			}else if(record.getStatus() == 1){
+				recordDto.setStatus("已结");
 			}
+			recordDto.setUser(userService.getUserByid(record.getUser()).getTrueName());
+			if (StringUtils.isNotBlank(record.getAttachment())) {
+				String attachment = record.getAttachment();
+				String img = "'<img src='"
+						+ attachment
+						+ "' width='25px' style='cursor:pointer;' onclick='showImg(this)'>'";
+				recordDto.setAttachment(img);
+			}
+			records.add(recordDto);
 		}
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("total", all.getTotalRow());
-		data.put("rows", all.getRows());
+		data.put("rows", records);
 		putJson(data);
 		return JSON;
 	}
@@ -79,11 +101,11 @@ public class CostRecordAction extends BaseAction {
 				.getRealPath("/upload/costrecord");
 		File destFile = new File(targetFolder, UUID.randomUUID().toString()
 				+ getExtention(fileName));
-		System.out.println("targetFolder: "+targetFolder);
+		System.out.println("targetFolder: " + targetFolder);
 		try {
 			FileUtils.copyFile(file, destFile);
 			rMap.put(STATUS, STATUS_SUCCESS);
-			String imgUrl = "/upload/costrecord/" + destFile.getName();
+			String imgUrl = "upload/costrecord/" + destFile.getName();
 			rMap.put("url", imgUrl);
 			ActionContext.getContext().put(MESSAGE, fileName + "--" + file);
 		} catch (Exception e) {
@@ -166,7 +188,8 @@ public class CostRecordAction extends BaseAction {
 		List<Map<String, Object>> rList = new ArrayList<Map<String, Object>>();
 		for (int i = 1; i <= 3; i++) {
 			Map<String, Object> rMap = new HashMap<String, Object>();
-			Map<String, Object> statisticResult = recordService.statisticPerson(year, month, i + "");
+			Map<String, Object> statisticResult = recordService
+					.statisticPerson(year, month, i + "");
 			String username = "";
 			if (i == 1) {
 				username = "韩晓军";
@@ -184,7 +207,7 @@ public class CostRecordAction extends BaseAction {
 		putContext("result", rList);
 		return "statistics";
 	}
-	
+
 	// 统计信息
 	public String statisticsForEmail() {
 		Map<String, Object> monthTotal = recordService.monthTotal(year, month);
@@ -192,7 +215,8 @@ public class CostRecordAction extends BaseAction {
 		List<Map<String, Object>> rList = new ArrayList<Map<String, Object>>();
 		for (int i = 1; i <= 3; i++) {
 			Map<String, Object> rMap = new HashMap<String, Object>();
-			Map<String, Object> statisticResult = recordService.statisticPerson(year, month, i + "");
+			Map<String, Object> statisticResult = recordService
+					.statisticPerson(year, month, i + "");
 			String username = "";
 			if (i == 1) {
 				username = "韩晓军";
@@ -225,14 +249,16 @@ public class CostRecordAction extends BaseAction {
 				username = "李洪亮";
 			}
 			Object[] data = new Object[12];
-			for(int j = 1; j <= 12; j++){
-				Map<String, Object> statisticResult = recordService.dailyCosyByPerson(year, j+"", i + "");
-				Map<String, Object> costTotal = (Map<String, Object>) statisticResult.get("costTotal");
+			for (int j = 1; j <= 12; j++) {
+				Map<String, Object> statisticResult = recordService
+						.dailyCosyByPerson(year, j + "", i + "");
+				Map<String, Object> costTotal = (Map<String, Object>) statisticResult
+						.get("costTotal");
 				Object total = costTotal.get("csum");
-				if(total == null){
+				if (total == null) {
 					total = 0;
 				}
-				data[j-1] = total;
+				data[j - 1] = total;
 			}
 			rMap.put("data", data);
 			rMap.put("name", username);
@@ -241,9 +267,9 @@ public class CostRecordAction extends BaseAction {
 		putJson(rList);
 		return JSON;
 	}
-	
-	//时间轴统计图数据
-	public String timing(){
+
+	// 时间轴统计图数据
+	public String timing() {
 		ArrayList day = recordService.statisticCostByDay(year, month);
 		putJson(day);
 		return JSON;
@@ -252,8 +278,13 @@ public class CostRecordAction extends BaseAction {
 	// 新增
 	public String add() {
 		// 保存
-		recordService.addRecord(record);
-		return "redirectList";
+		try {
+			recordService.addRecord(record);
+			putJson(1);
+		} catch (Exception e) {
+			putJson(0);
+		}
+		return JSON;
 	}
 
 	// 编辑
@@ -261,15 +292,15 @@ public class CostRecordAction extends BaseAction {
 		recordService.updateRecord(record);
 		return "redirectList";
 	}
-	
-	//时间走势图
-	public String timeChart(){
+
+	// 时间走势图
+	public String timeChart() {
 		return "timeChart";
 	}
-	
-	//个人消费图
-	public String perPersonCostChart(){
-		return "perPersonCostChart";
+
+	// 个人消费图
+	public String personalCostChart() {
+		return "personalCostChart";
 	}
 
 	public CostRecord getRecord() {
@@ -352,20 +383,20 @@ public class CostRecordAction extends BaseAction {
 		this.recordId = recordId;
 	}
 
-	public Integer getPageSize() {
-		return pageSize;
+	public int getPage() {
+		return page;
 	}
 
-	public void setPageSize(Integer pageSize) {
-		this.pageSize = pageSize;
+	public void setPage(int page) {
+		this.page = page;
 	}
 
-	public Integer getCurrentPage() {
-		return currentPage;
+	public int getRows() {
+		return rows;
 	}
 
-	public void setCurrentPage(Integer currentPage) {
-		this.currentPage = currentPage;
+	public void setRows(int rows) {
+		this.rows = rows;
 	}
 
 }

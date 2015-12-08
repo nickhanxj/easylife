@@ -27,6 +27,17 @@
 			"text":"所有用户"
 		}]
 	},{
+		"id":13,
+		"text":"统计",
+		"state":"closed",
+		"children":[{
+			"id":131,
+			"text":"个人消费统计",
+			"attributes":{
+				"url":"costAction_personalCostChart"
+			}
+		}]
+	},{
 		"id":16,
 		"text":"系统",
 		"state":"closed",

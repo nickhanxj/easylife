@@ -83,6 +83,7 @@
 		
 		<action name="costAction_*" class="com.easylife.web.action.CostRecordAction" method="{1}">
 			<result name="list">/WEB-INF/jsps/costrecord/costrecordList.jsp</result>
+			<result name="personalCostChart">/WEB-INF/jsps/costrecord/chart.jsp</result>
 		</action>
 <!-- 		<action name="backendAction_*" class="com.demo.ssh.action.BackendAction" method="{1}"> -->
 <!-- 			<result name="backend">/WEB-INF/views/backend/backend.jsp</result> -->

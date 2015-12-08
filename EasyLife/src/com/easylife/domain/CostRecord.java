@@ -67,6 +67,7 @@ public class CostRecord {
 		this.costFor = costFor;
 	}
 
+	@Column(name="costdate", columnDefinition="DATE")
 	public Date getCostdate() {
 		return costdate;
 	}
