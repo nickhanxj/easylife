@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+    
+    <!-- 自动填充前一天无消费记录 -->
+    <!-- 执行定时任务业务的类 -->    
+	<bean id="checkPreDayCost" class="com.demo.ssh.quartz.CheckPreDayCostQuartz"></bean>
+	<!-- spring管理定时任务的类 -->
+	<bean id="jobTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 调用的类 -->
+		<property name="targetObject" ref="checkPreDayCost"/>
+		<!-- 调用的方法 -->
+		<property name="targetMethod" value="checkCost"/>
+	</bean>
+	<!-- 定义触发时间 -->
+	<bean id="checkTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="jobTask"/>
+		<!-- 每天晚上12点30执行 -->
+		<property name="cronExpression" value="0 0 1 * * ?"></property>
+	</bean>
+	
+	<!-- 定时发送邮件 -->
+	<bean id="mailSender" class="com.demo.ssh.quartz.MailSendQuartz"></bean>
+	<!-- spring管理定时任务的类 -->
+	<bean id="sendTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 调用的类 -->
+		<property name="targetObject" ref="mailSender"/>
+		<!-- 调用的方法 -->
+		<property name="targetMethod" value="sendEmail"/>
+	</bean>
+	<!-- 定义触发时间 -->
+	<bean id="sendTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="sendTask"/>
+		<!-- 每月最后一天晚上22点执行 -->
+		<property name="cronExpression" value="0 0 22 L * ?"></property>
+	</bean>
+	
+	<!-- 总管理类 -->
+	<bean lazy-init="false" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+           <list>
+            <ref local="checkTime" />
+            <ref local="sendTime" />
+           </list>
+        </property>
+	</bean>
+</beans>

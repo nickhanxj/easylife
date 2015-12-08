@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>    
+<!DOCTYPE struts PUBLIC    
+"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"    
+"http://struts.apache.org/dtds/struts-2.3.dtd"> 
+
+<struts>
+	<!-- 主题 -->
+	<constant name="struts.ui.theme" value="simple"></constant>
+	<!-- 开启使用开发模式，详细错误提示 -->    
+    <constant name="struts.devMode" value="true" />    
+    <!-- 将对象交给spring管理 -->    
+    <constant name="struts.objectFactory" value="spring" />    
+    <!-- 指定资源编码类型 -->    
+    <constant name="struts.i18n.encoding" value="UTF-8" />     
+    <!-- 指定每次请求到达，重新加载资源文件 -->    
+    <constant name="struts.i18n.reload" value="false" />    
+    <!-- 指定每次配置文件更改后，自动重新加载 -->    
+    <constant name="struts.configuration.xml.reload" value="false" />    
+    <!-- 默认后缀名 -->    
+<!--     <constant name="struts.action.extension" value="action" />       -->
+	<package name="default" extends="json-default" namespace="/">
+	
+		<!-- 权限拦截器配置 -->
+<!-- 		<interceptors> -->
+<!-- 			<interceptor name="authInterceptor" class="com.demo.ssh.interceptor.AuthInterceptor"/> -->
+<!-- 			<interceptor-stack name="authStack"> -->
+<!-- 				<interceptor-ref name="defaultStack"/> -->
+<!-- 				<interceptor-ref name="authInterceptor"/> -->
+<!-- 			</interceptor-stack> -->
+<!-- 		</interceptors> -->
+		
+		<!-- 配置默认拦截器栈 -->
+<!-- 		<default-interceptor-ref name="authStack"/> -->
+		
+		<global-results>
+			<result name="error">/view/error.jsp</result>
+			<result name="unauth">/view/unauthorized.jsp</result>
+			<result name="login">/view/login.jsp</result>
+			<result name="json" type="json">
+				<param name="root">jsonData</param>
+			</result>
+		</global-results>
+		
+<!-- 		<action name="userAction_*" class="com.demo.ssh.action.UserAction" method="{1}"> -->
+<!-- 			<result name="register">/view/register.jsp</result> -->
+<!-- 			<result name="personalCenter">/WEB-INF/views/personalcenter.jsp</result> -->
+<!-- 			<result name="success" type="redirect">${pendingUrl}</result> -->
+<!-- 			<result name="forgetPassword">/WEB-INF/views/forgetPassword.jsp</result> -->
+<!-- 			<result name="editProfile">/WEB-INF/views/profile/edit_profile.jsp</result> -->
+<!-- 			<result name="reloadInfo" type="redirectAction">/userAction_personalCenter</result> -->
+<!-- 			<result name="homepage" type="redirectAction">viewAction_homepage</result> -->
+<!-- 			<result name="resetPassword">/WEB-INF/views/profile/resetPassword.jsp</result> -->
+<!-- 		</action> -->
+		
+<!-- 		<action name="resourceAction_*" class="com.demo.ssh.action.ResourceAction" method="{1}"> -->
+<!-- 			<result name="{1}">/WEB-INF/views/{1}.jsp</result> -->
+<!-- 		</action> -->
+		
+<!-- 		<action name="blogAction_*" class="com.demo.ssh.action.BlogAction" method="{1}"> -->
+<!-- 			<result name="write">/WEB-INF/views/blog/blog_write.jsp</result> -->
+<!-- 			<result name="edit">/WEB-INF/views/blog/blog_edit.jsp</result> -->
+<!-- 			<result name="list">/WEB-INF/views/blog.jsp</result> -->
+<!-- 			<result name="success" type="redirectAction">blogAction_list?message=${message}</result> -->
+<!-- 			<result name="blogDetail" type="redirectAction">viewAction_blogdetail?blogId=${id}</result> -->
+<!-- 		</action> -->
+		
+<!-- 		<action name="viewAction_*" class="com.demo.ssh.action.UnAuthedResourceAction" method="{1}"> -->
+<!-- 			<result name="homepage">/view/homepage.jsp</result> -->
+<!-- 			<result name="register">/view/register.jsp</result> -->
+<!-- 			<result name="detail">/WEB-INF/views/blog/blog_detail.jsp</result> -->
+<!-- 		</action> -->
+		
+<!-- 		<action name="fileAction_*" class="com.demo.ssh.action.FileAction" method="{1}"> -->
+<!-- 			<result name="success">/WEB-INF/views/uploadsuccess.jsp</result> -->
+<!-- 			<result name="album">/WEB-INF/views/album.jsp</result> -->
+<!-- 			<result name="albumlist"  type="redirectAction">fileAction_album</result> -->
+<!-- 		</action> -->
+		
+<!-- 		<action name="photoAction_*" class="com.demo.ssh.action.PhotoAction" method="{1}"> -->
+<!-- 			<result name="success">/WEB-INF/views/photo/upload.jsp</result> -->
+<!-- 			<result name="phptolist">/WEB-INF/views/photo/photo_list.jsp</result> -->
+<!-- 		</action> -->
+		
+		<action name="costAction_*" class="com.easylife.web.action.CostRecordAction" method="{1}">
+			<result name="list">/WEB-INF/jsps/costrecord/costrecordList.jsp</result>
+		</action>
+<!-- 		<action name="backendAction_*" class="com.demo.ssh.action.BackendAction" method="{1}"> -->
+<!-- 			<result name="backend">/WEB-INF/views/backend/backend.jsp</result> -->
+<!-- 			<result name="costgroup">/WEB-INF/views/backend/costgroup.jsp</result> -->
+<!-- 			<result name="reloadCostgroup" type="redirectAction">backendAction_costgroup</result> -->
+<!-- 		</action> -->
+<!-- 		<action name="backendSystemAction_*" class="com.demo.ssh.action.backend.BackendAction" method="{1}"> -->
+<!-- 			<result name="index">/WEB-INF/backendsystem/index.jsp</result> -->
+<!-- 			<result name="userList">/WEB-INF/backendsystem/user_list.jsp</result> -->
+<!-- 			<result name="costgroupList">/WEB-INF/backendsystem/costgroup_list.jsp</result> -->
+<!-- 		</action> -->
+	</package>
+</struts>
