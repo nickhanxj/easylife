@@ -31,7 +31,7 @@ public class MailSendQuartz {
 		}
 		String url = "http://localhost/cost/statisticsForEmail.html";
 		String param = "year="+year+"&month="+month;
-		String sendHtml = HttpRequestUtil.sendGet(url, param);
+		String sendHtml = HttpRequestUtil.sendGet(url, param, null);
 		System.out.println(sendHtml);
 		sendManager.doSendHtmlEmail(year+"年"+month+"月消费账单", sendHtml, receiveUser);
 	}

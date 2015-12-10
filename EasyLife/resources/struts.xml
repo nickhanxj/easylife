@@ -85,6 +85,11 @@
 			<result name="list">/WEB-INF/jsps/costrecord/costrecordList.jsp</result>
 			<result name="personalCostChart">/WEB-INF/jsps/costrecord/chart.jsp</result>
 		</action>
+		<action name="toolAction_*" class="com.easylife.web.action.ToolAction" method="{1}">
+			<result name="phoneSearch">/WEB-INF/jsps/tools/phoneSearch.jsp</result>
+			<result name="todayhistory">/WEB-INF/jsps/tools/todayhistory.jsp</result>
+			<result name="news">/WEB-INF/jsps/tools/news.jsp</result>
+		</action>
 <!-- 		<action name="backendAction_*" class="com.demo.ssh.action.BackendAction" method="{1}"> -->
 <!-- 			<result name="backend">/WEB-INF/views/backend/backend.jsp</result> -->
 <!-- 			<result name="costgroup">/WEB-INF/views/backend/costgroup.jsp</result> -->

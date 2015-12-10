@@ -38,6 +38,29 @@
 			}
 		}]
 	},{
+		"id":14,
+		"text":"常用工具",
+		"state":"closed",
+		"children":[{
+			"id":141,
+			"text":"电话号码归属地查询",
+			"attributes":{
+				"url":"toolAction_phoneNumber"
+			}
+		},{
+			"id":142,
+			"text":"历史上的今天",
+			"attributes":{
+				"url":"toolAction_todayhistory"
+			}
+		},{
+			"id":143,
+			"text":"实时新闻",
+			"attributes":{
+				"url":"toolAction_news"
+			}
+		}]
+	},{
 		"id":16,
 		"text":"系统",
 		"state":"closed",

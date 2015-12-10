@@ -9,16 +9,24 @@ import java.net.URLConnection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 public class HttpRequestUtil {
-	public static String sendGet(String url, String param) {
+	public static String sendGet(String url, String param, String apikey) {
 		String result = "";
 		BufferedReader in = null;
 		try {
-			String urlNameString = url + "?" + param;
+			String urlNameString = url;
+			if(StringUtils.isNotBlank(param)){
+				urlNameString += "?" + param;
+			}
 			URL realUrl = new URL(urlNameString);
 			// 打开和URL之间的连接
 			URLConnection connection = realUrl.openConnection();
 			// 设置通用的请求属性
+			if(StringUtils.isNotBlank(apikey)){
+				connection.setRequestProperty("apikey", apikey);
+			}
 			connection.setRequestProperty("accept", "*/*");
 			connection.setRequestProperty("connection", "Keep-Alive");
 			connection.setRequestProperty("user-agent",
