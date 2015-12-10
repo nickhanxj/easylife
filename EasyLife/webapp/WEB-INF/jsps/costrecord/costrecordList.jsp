@@ -6,11 +6,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="shortcut icon" type="image/x-icon" href="images/logo.ico" />
-	<link rel="stylesheet" type="text/css" href="easyui/themes/peppergrinder/easyui.css">
-	<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
 	<link rel="stylesheet" href="js/layer/skin/layer.css" type="text/css" media="screen" />
-	<script type="text/javascript" src="easyui/jquery.min.js"></script>
-	<script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
+	<jsp:include page="/WEB-INF/jsps/general/general.jsp"></jsp:include>
 	<script type="text/javascript" src="easyui/locale/easyui-lang-zh_CN.js"></script>
 	<script type="text/javascript" src="js/layer/layer.js"></script>
 	<script type="text/javascript" src="js/layer/extend/layer.ext.js"></script>

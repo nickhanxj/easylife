@@ -6,10 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>个人消费统计图</title>
 <%@taglib prefix="s" uri="/struts-tags"%>
-<link rel="stylesheet" type="text/css" href="easyui/themes/peppergrinder/easyui.css">
-	<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
-	<script type="text/javascript" src="easyui/jquery.min.js"></script>
-	<script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
+	<jsp:include page="/WEB-INF/jsps/general/general.jsp"></jsp:include>
 	<script type="text/javascript" src="js/Highcharts-4.0.3/js/highcharts.js"></script>
 	<style type="text/css">
 		.btn{

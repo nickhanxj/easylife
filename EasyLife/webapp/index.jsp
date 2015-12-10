@@ -6,17 +6,13 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Easy Life</title>
 	<link rel="shortcut icon" type="image/x-icon" href="images/logo.ico" />
-	<link rel="stylesheet" type="text/css" href="easyui/themes/peppergrinder/easyui.css">
-	<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
-	<script type="text/javascript" src="easyui/jquery.min.js"></script>
-	<script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
+	<jsp:include page="WEB-INF/jsps/general/general.jsp"></jsp:include>
 <title>测试Ext</title>
 </head>
 <body class="easyui-layout">
-	<div data-options="region:'north'" style="height:80px; text-align: center;">
-		<h2 style="width: 100%;">
-			<img alt="" width="30px" src="images/logo.png" style="float: left;">EASY LIFE
-		</h2>
+	<div data-options="region:'north'" style="height:80px; padding: 25px;">
+			<img alt="" width="30px" src="images/logo.png" style="float: left; margin-left: 50px;"><h2 style="display: inline;">EASY LIFE</h2>
+			<div style="float: right;display: inline;">当前登录：Admin</div>
 	</div>
 <!-- 	<div data-options="region:'east',split:true" title="East" style="width:100px;"></div> -->
 	<div data-options="region:'west'" title="West" style="width:200px;">
