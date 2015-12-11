@@ -2,11 +2,15 @@ package com.easylife.domain;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -21,6 +25,7 @@ public class CostRecord {
 	private Integer status = 0;// 状态 0未结 1已结
 	private String attachment;
 	private Integer deleted = 0; // 是否删除 0未删 1已删
+	private CostGroup costGroup;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,7 +72,7 @@ public class CostRecord {
 		this.costFor = costFor;
 	}
 
-	@Column(name="costdate", columnDefinition="DATE")
+	@Column(name = "costdate")
 	public Date getCostdate() {
 		return costdate;
 	}
@@ -106,6 +111,16 @@ public class CostRecord {
 
 	public void setDeleted(Integer deleted) {
 		this.deleted = deleted;
+	}
+
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "record_id")
+	public CostGroup getCostGroup() {
+		return costGroup;
+	}
+
+	public void setCostGroup(CostGroup costGroup) {
+		this.costGroup = costGroup;
 	}
 
 }

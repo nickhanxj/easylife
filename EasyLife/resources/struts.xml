@@ -85,6 +85,9 @@
 			<result name="list">/WEB-INF/jsps/costrecord/costrecordList.jsp</result>
 			<result name="personalCostChart">/WEB-INF/jsps/costrecord/chart.jsp</result>
 		</action>
+		<action name="groupAction_*" class="com.easylife.web.action.CostGroupAction" method="{1}">
+			<result name="groupList">/WEB-INF/jsps/costrecord/costgroupList.jsp</result>
+		</action>
 		<action name="toolAction_*" class="com.easylife.web.action.ToolAction" method="{1}">
 			<result name="phoneSearch">/WEB-INF/jsps/tools/phoneSearch.jsp</result>
 			<result name="todayhistory">/WEB-INF/jsps/tools/todayhistory.jsp</result>

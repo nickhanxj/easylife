@@ -24,18 +24,13 @@
 </head>
 <body>
 	<div style="width: 100%; text-align: center;margin-top: 25px;" >
-		<div id="news"></div>
+		<div id="news">
+		<s:iterator value="%{#news}" var="new">
+			<h2><a href="${new.url}" target="blank">${new.title}</a></h2>
+			<img src="${new.image_url}"/>
+			<p>${new.abstract}</p>
+		</s:iterator>
+		</div>
 	</div>
 </body>
-<script type="text/javascript">
-	$(function(){
-		$.ajax({
-			url:"toolAction_getNews",
-			success: function(data){
-				var news = $.parseJSON(data);
-				$("#news").html(data);
-			}
-		});
-	});
-</script>
 </html>

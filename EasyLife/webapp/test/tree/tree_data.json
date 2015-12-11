@@ -9,7 +9,7 @@
 			"id":111,
 			"text":"消费组",
 			"attributes":{
-				"url":"www.baidu.com"
+				"url":"groupAction_groupList"
 			}
 		},{
 			"id":112,

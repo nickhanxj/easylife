@@ -41,7 +41,6 @@ public class CostRecordAction extends BaseAction {
 	private Long recordId;
 	private int page;
 	private int rows;
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
 
 	// 记录列表
 	public String list() {

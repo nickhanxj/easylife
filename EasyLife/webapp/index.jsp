@@ -10,12 +10,12 @@
 <title>测试Ext</title>
 </head>
 <body class="easyui-layout">
-	<div data-options="region:'north'" style="height:80px; padding: 25px;">
+	<div data-options="region:'north'" style="height:80px; padding: 25px; background-image: url('images/head_background.jpg');">
 			<img alt="" width="30px" src="images/logo.png" style="float: left; margin-left: 50px;"><h2 style="display: inline;">EASY LIFE</h2>
 			<div style="float: right;display: inline;">当前登录：Admin</div>
 	</div>
 <!-- 	<div data-options="region:'east',split:true" title="East" style="width:100px;"></div> -->
-	<div data-options="region:'west'" title="West" style="width:200px;">
+	<div data-options="region:'west'" title="West" style="width:200px; background-image: url('images/head_background.jpg');">
 		<ul class="easyui-tree" id="menu" data-options="url:'test/tree/tree_data.json',method:'get',animate:true"></ul>
 	</div>
 	<div data-options="region:'center'" id="mainArea" class="easyui-tabs">
@@ -34,7 +34,10 @@
 			</div>
 		</div>
 	</div>
-	<div data-options="region:'south'" style="height:50px; text-align: center;">copyright@2015*Nick</div>
+	<div data-options="region:'south'" style="height:50px; text-align: center; background-image: url('images/head_background.jpg');">
+		<div style="margin-top: 5px;">copyright@2015*Nick</div>
+		<div style="margin-top: 5px;">欢迎交流：471026023@qq.com</div>
+	</div>
 </body>
 <script type="text/javascript">
 	function addTab(title, url){

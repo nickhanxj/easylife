@@ -1,4 +1,4 @@
-package com.easylife.domain;
+package com.easylife.domain.tools;
 
 public class TodayHistory {
 	private String id;

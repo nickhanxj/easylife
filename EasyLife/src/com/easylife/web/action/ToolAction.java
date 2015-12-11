@@ -7,7 +7,7 @@ import java.util.Map;
 import net.sf.json.JSONObject;
 
 import com.easylife.base.BaseAction;
-import com.easylife.domain.TodayHistory;
+import com.easylife.domain.tools.TodayHistory;
 import com.easylife.util.HttpRequestUtil;
 
 public class ToolAction extends BaseAction {
@@ -52,13 +52,18 @@ public class ToolAction extends BaseAction {
 	}
 
 	public String news() {
+		String response = HttpRequestUtil.sendGet(newsUrl, null ,apikey);
+		Map<String, Class> classMap = new HashMap<String, Class>();
+		classMap.put("retData", Map.class);
+		Map map = (Map) JSONObject.toBean(JSONObject.fromObject(response),
+				Map.class, classMap);
+		if ("0".equals(String.valueOf(map.get("errNum")))) {
+			putContext("news", map.get("retData"));
+		}
 		return "news";
 	}
 
 	public String getNews() {
-		String response = HttpRequestUtil.sendGet(newsUrl, null ,apikey);
-		System.out.println("r: "+response);
-		putJson(response);
 		return JSON;
 	}
 

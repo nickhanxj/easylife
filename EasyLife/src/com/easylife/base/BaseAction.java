@@ -1,5 +1,7 @@
 package com.easylife.base;
 
+import java.text.SimpleDateFormat;
+
 import com.easylife.domain.User;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
@@ -17,6 +19,7 @@ public class BaseAction extends ActionSupport {
 	public static final String STATUS_SUCCESS = "1";
 	public static final String STATUS_ERROR = "2";
 	public static final String MESSAGE = "message";
+	protected SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
 
 	protected User getSessionUser() {
 		User currentUser = (User) ActionContext.getContext().getSession()
