@@ -10,12 +10,13 @@
 <title>测试Ext</title>
 </head>
 <body class="easyui-layout">
-	<div data-options="region:'north'" style="height:80px; padding: 25px; background-image: url('images/head_background.jpg');">
-			<img alt="" width="30px" src="images/logo.png" style="float: left; margin-left: 50px;"><h2 style="display: inline;">EASY LIFE</h2>
-			<div style="float: right;display: inline;">当前登录：Admin</div>
+	<div data-options="region:'north'" style="height:80px; ">
+			<img style="z-index:-1;" src="images/head_logo.jpg"  height="100%" width="100%" /> 
+<!-- 			<img alt="" width="30px" src="images/logo.png" style="float: left; margin-left: 50px;"><h2 style="display: inline;">EASY LIFE</h2> -->
+<!-- 			<div style="float: right;display: inline;">当前登录：Admin</div> -->
 	</div>
 <!-- 	<div data-options="region:'east',split:true" title="East" style="width:100px;"></div> -->
-	<div data-options="region:'west'" title="West" style="width:200px; background-image: url('images/head_background.jpg');">
+	<div data-options="region:'west'" title="系统菜单" style="width:200px; background-image: url('images/head_background.jpg');">
 		<ul class="easyui-tree" id="menu" data-options="url:'test/tree/tree_data.json',method:'get',animate:true"></ul>
 	</div>
 	<div data-options="region:'center'" id="mainArea" class="easyui-tabs">

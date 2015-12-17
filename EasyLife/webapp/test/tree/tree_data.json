@@ -1,19 +1,23 @@
 [{
 	"id":1,
 	"text":"菜单",
+	"iconCls":"icon-menu-level_1",
 	"children":[{
 		"id":11,
 		"text":"消费",
+		"iconCls":"icon-menu-level_2",
 		"state":"closed",
 		"children":[{
 			"id":111,
 			"text":"消费组",
+			"iconCls":"icon-menu-level_3",
 			"attributes":{
 				"url":"groupAction_groupList"
 			}
 		},{
 			"id":112,
 			"text":"消费记录",
+			"iconCls":"icon-menu-level_3",
 			"attributes":{
 				"url":"costAction_list"
 			}
@@ -21,18 +25,25 @@
 	},{
 		"id":12,
 		"text":"用户",
+		"iconCls":"icon-menu-level_2",
 		"state":"closed",
 		"children":[{
 			"id":121,
-			"text":"所有用户"
+			"text":"所有用户",
+			"iconCls":"icon-menu-level_3",
+			"attributes":{
+				"url":"userAction_list"
+			}
 		}]
 	},{
 		"id":13,
 		"text":"统计",
+		"iconCls":"icon-menu-level_2",
 		"state":"closed",
 		"children":[{
 			"id":131,
 			"text":"个人消费统计",
+			"iconCls":"icon-menu-level_3",
 			"attributes":{
 				"url":"costAction_personalCostChart"
 			}
@@ -40,22 +51,26 @@
 	},{
 		"id":14,
 		"text":"常用工具",
+		"iconCls":"icon-menu-level_2",
 		"state":"closed",
 		"children":[{
 			"id":141,
 			"text":"电话号码归属地查询",
+			"iconCls":"icon-menu-level_3",
 			"attributes":{
 				"url":"toolAction_phoneNumber"
 			}
 		},{
 			"id":142,
 			"text":"历史上的今天",
+			"iconCls":"icon-menu-level_3",
 			"attributes":{
 				"url":"toolAction_todayhistory"
 			}
 		},{
 			"id":143,
 			"text":"实时新闻",
+			"iconCls":"icon-menu-level_3",
 			"attributes":{
 				"url":"toolAction_news"
 			}
@@ -63,10 +78,12 @@
 	},{
 		"id":16,
 		"text":"系统",
+		"iconCls":"icon-menu-level_2",
 		"state":"closed",
 		"children":[{
 			"id":161,
-			"text":"系统设置"
+			"text":"系统设置",
+			"iconCls":"icon-menu-level_3"
 		}]
 	}]
 }]

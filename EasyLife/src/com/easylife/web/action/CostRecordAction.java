@@ -76,7 +76,7 @@ public class CostRecordAction extends BaseAction {
 			}else if(record.getStatus() == 1){
 				recordDto.setStatus("已结");
 			}
-			recordDto.setUser(userService.getUserByid(record.getUser()).getTrueName());
+			recordDto.setUser(record.getUser());
 			if (StringUtils.isNotBlank(record.getAttachment())) {
 				String attachment = record.getAttachment();
 				String img = "'<img src='"

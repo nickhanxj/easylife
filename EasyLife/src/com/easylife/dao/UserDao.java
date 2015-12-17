@@ -73,28 +73,14 @@ public class UserDao extends BaseDao<User>{
 	
 
 	public User getUserByCondition(User user) {
-		String userName = user.getEmail();
 		String password = user.getPassword();
-		if (StringUtils.isNotBlank(userName) && StringUtils.isBlank(password)) {
-			Iterator iterate = getSession().createQuery(
-					"from User u where u.userName = '" + user.getUserName()
-							+ "'").iterate();
-			if (iterate.hasNext()) {
-				return (User) iterate.next();
-			}
-		} else if (StringUtils.isNotBlank(userName)
-				&& StringUtils.isNotBlank(password)) {
-			Iterator iterate = getSession()
-					.createQuery(
-							"from User u where u.email = '"
-									+ user.getEmail()
-									+ "' and u.password = '"
-									+ user.getPassword() + "'").iterate();
-			if (iterate.hasNext()) {
-				return (User) iterate.next();
-			}
-		}
-		return null;
+		String userName = user.getUserName();
+		String hql = "from User u where (u.email = ? or u.userName = ?) and u.password = ?";
+		return (User) getSession().createQuery(hql)
+				.setParameter(0, userName)
+				.setParameter(1, userName)
+				.setParameter(2, password)
+				.uniqueResult();
 	}
 
 	public User selectUserById(String id) {

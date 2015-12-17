@@ -114,7 +114,7 @@ public class CostRecord {
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinColumn(name = "record_id")
+	@JoinColumn(name = "group_id")
 	public CostGroup getCostGroup() {
 		return costGroup;
 	}

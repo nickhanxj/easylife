@@ -62,3 +62,12 @@
 .icon-mini-refresh{
 	background:url('icons/mini_refresh.png') no-repeat center center;
 }
+.icon-menu-level_1{
+	background:url('icons/level1.png') no-repeat center center;
+}
+.icon-menu-level_2{
+	background:url('icons/level2.png') no-repeat center center;
+}
+.icon-menu-level_3{
+	background:url('icons/level3.png') no-repeat center center;
+}
