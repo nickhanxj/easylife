@@ -21,21 +21,21 @@
 	<package name="default" extends="json-default" namespace="/">
 	
 		<!-- 权限拦截器配置 -->
-<!-- 		<interceptors> -->
-<!-- 			<interceptor name="authInterceptor" class="com.demo.ssh.interceptor.AuthInterceptor"/> -->
-<!-- 			<interceptor-stack name="authStack"> -->
-<!-- 				<interceptor-ref name="defaultStack"/> -->
-<!-- 				<interceptor-ref name="authInterceptor"/> -->
-<!-- 			</interceptor-stack> -->
-<!-- 		</interceptors> -->
+		<interceptors>
+			<interceptor name="authInterceptor" class="com.easylife.web.interceptor.AuthInterceptor"/>
+			<interceptor-stack name="authStack">
+				<interceptor-ref name="defaultStack"/>
+				<interceptor-ref name="authInterceptor"/>
+			</interceptor-stack>
+		</interceptors>
 		
 		<!-- 配置默认拦截器栈 -->
-<!-- 		<default-interceptor-ref name="authStack"/> -->
+		<default-interceptor-ref name="authStack"/>
 		
 		<global-results>
 			<result name="error">/view/error.jsp</result>
 			<result name="unauth">/view/unauthorized.jsp</result>
-			<result name="login">/view/login.jsp</result>
+			<result name="login">/login.jsp</result>
 			<result name="json" type="json">
 				<param name="root">jsonData</param>
 			</result>

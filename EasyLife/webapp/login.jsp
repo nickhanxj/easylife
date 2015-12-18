@@ -19,10 +19,10 @@
 	}
 	
 	.login{
-		width: 300px;
-		margin-left: 980px;
-		margin-top: 290px;
-		border: 4px #B0C4DE solid;
+		width: 400px;
+		margin-left: 940px;
+		margin-top: 260px;
+		border: 8px #B0C4DE solid;
 		text-align: center;
 	}
 	
@@ -47,6 +47,7 @@
 	input{
 		height: 30px;
 		width: 200px;
+		font-weight: bolder;
 	}
 	table {  
 		border-collapse:   separate;   
@@ -65,14 +66,24 @@
 			<form id="loginForm">
 			<table>
 				<tr>
+					<td colspan="2">
+						<div style="margin-top: 15px; font-weight: bold; font-family: '微软雅黑'">用户登录</div>
+					</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><img alt="" src="images/user.png"> </td>
 					<td><input type="text" placeholder="请输入用户名或邮箱" name="user.userName"></td>
 				</tr>
 				<tr>
 					<td><input type="password" placeholder="请输入密码" name="user.password"></td>
 				</tr>
 				<tr>
-					<td style="text-align: center;">
-						<span class="loginBtn" onclick="sumitForm()">登录</span><br><br><br>
+					<td colspan="2" style="text-align: center;">
+						<span class="loginBtn" onclick="sumitForm()">登录</span><br>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" style="text-align: center;">
 						<span id="message" class="msg"></span>
 					</td>
 				</tr>
@@ -89,13 +100,16 @@
 			data:$("#loginForm").serialize(),
 			success: function(data){
 				if(data == "SUCCESS"){
-					$("#message").html("<font color='green'>登录成功！正在跳转...</font>");
-					window.location.href="index.jsp";
+					$("#message").html("<font color='green'>登录成功！正在进入系统...</font>");
+					setTimeout("enterSystem()",1000);
 				}else{
 					$("#message").html("<font color='red'>"+data+"</font>");
 				}
 			}
 		});
+	}
+	function enterSystem(){
+		window.location.href="index.jsp";
 	}
 </script>
 </html>

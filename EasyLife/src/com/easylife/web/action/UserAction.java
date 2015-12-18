@@ -48,6 +48,11 @@ public class UserAction extends BaseAction {
 		putJson("SUCCESS");
 		return JSON;
 	}
+	
+	public String logout(){
+		ActionContext.getContext().getSession().put("authUser", null);
+		return "login";
+	}
 
 	public User getUser() {
 		return user;

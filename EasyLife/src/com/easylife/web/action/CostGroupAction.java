@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
 import com.easylife.base.BaseAction;
 import com.easylife.domain.CostGroup;
+import com.easylife.domain.GroupMember;
 import com.easylife.domain.dto.CostGroupDto;
 import com.easylife.service.CostGroupService;
 import com.easylife.util.Page;
@@ -35,7 +37,12 @@ public class CostGroupAction extends BaseAction {
 			groupDto.setGroupName(group.getGroupName());
 			groupDto.setId(group.getId());
 			groupDto.setMark(group.getMark());
-			groupDto.setMembers("11");
+			Set<GroupMember> members2 = group.getMembers();
+			StringBuffer buffer = new StringBuffer("");
+			for (GroupMember groupMember : members2) {
+				buffer.append(groupMember.getMemberName()+" ");
+			}
+			groupDto.setMembers(buffer.toString());
 			records.add(groupDto);
 		}
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -47,7 +54,29 @@ public class CostGroupAction extends BaseAction {
 	
 	public String add(){
 		try {
+			String[] gMembers = members.split(",");
+			for (String member : gMembers) {
+				GroupMember groupMember = new GroupMember();
+				groupMember.setMemberName(member);
+				group.addMember(groupMember);
+			}
 			groupService.save(group);
+			putJson(1);
+		} catch (Exception e) {
+			putJson(0);
+		}
+		return JSON;
+	}
+	
+	public String update(){
+		try {
+			String[] gMembers = members.split(",");
+			for (String member : gMembers) {
+				GroupMember groupMember = new GroupMember();
+				groupMember.setMemberName(member);
+				group.addMember(groupMember);
+			}
+//			groupService.update(group);
 			putJson(1);
 		} catch (Exception e) {
 			putJson(0);

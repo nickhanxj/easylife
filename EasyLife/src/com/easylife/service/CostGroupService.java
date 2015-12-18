@@ -36,4 +36,8 @@ public class CostGroupService {
 	public void save(CostGroup group){
 		groupDao.save(group);
 	}
+	
+	public void update(CostGroup group){
+		groupDao.update(group);
+	}
 }
