@@ -57,6 +57,15 @@
 	.msg{
 		font-size: x-small;
 	}
+	.validateCode{
+		height: 30px;
+		margin-top: 0;
+		width: 95px;
+		vertical-align:middle;
+	}
+	.refreshCode{
+		cursor: pointer;
+	}
 </style>
 </head>
 <body>
@@ -71,15 +80,24 @@
 					</td>
 				</tr>
 				<tr>
-					<td rowspan="2"><img alt="" src="images/user.png"> </td>
-					<td><input type="text" placeholder="请输入用户名或邮箱" name="user.userName"></td>
+					<td rowspan="3"><img alt="" src="images/user.png"> </td>
+					<td style="text-align: left;"><input type="text" placeholder="请输入用户名或邮箱" name="user.userName"></td>
 				</tr>
 				<tr>
-					<td><input type="password" placeholder="请输入密码" name="user.password"></td>
+					<td style="text-align: left;"><input type="password" placeholder="请输入密码" name="user.password"></td>
+				</tr>
+				<tr>
+					<td style="text-align: left;">
+						<div>
+						<input class="validateCode" type="text" placeholder="请输入验证码" name="vcode">
+						<img alt="" title="换一张" onclick="reloadImg()" src="images/imagecode/imagecode.jpg" class="validateCode refreshCode">
+						</div>
+					</td>
 				</tr>
 				<tr>
 					<td colspan="2" style="text-align: center;">
-						<span class="loginBtn" onclick="sumitForm()">登录</span><br>
+						<span class="loginBtn" onclick="sumitForm()">登录</span>
+						<span class="loginBtn" onclick="resetForm()">重置</span><br>
 					</td>
 				</tr>
 				<tr>
@@ -110,6 +128,19 @@
 	}
 	function enterSystem(){
 		window.location.href="index.jsp";
+	}
+	
+	$(function(){
+// 		reloadImg();
+	});
+	
+	function reloadImg(){
+		$.ajax({
+			url:"userAction_getImageCode",
+			type:"POST",
+			success: function(data){
+			}
+		});
 	}
 </script>
 </html>
