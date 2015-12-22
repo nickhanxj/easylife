@@ -87,8 +87,44 @@
 	background:url('icons/statistics.png') no-repeat center center;
 }
 .icon-settings{
-	background:url('icons/settings.png') no-repeat center center;
+	background:url('icons/settings.png') no-repeat left center;
 }
 .icon-sysmenu{
 	background:url('icons/sysmenu.png') no-repeat center center;
+}
+.icon-costgroup{
+	background:url('icons/easylife/costgroup.png') no-repeat left center;
+}
+.icon-costrecord{
+	background:url('icons/easylife/costrecord.png') no-repeat left center;
+}
+.icon-user-login{
+	background:url('icons/easylife/user_login.png') no-repeat left center;
+}
+.icon-password-login{
+	background:url('icons/easylife/password_login.png') no-repeat left center;
+}
+.icon-code-login{
+	background:url('icons/easylife/code.png') no-repeat left center;
+}
+.icon-userlist{
+	background:url('icons/easylife/user_list.png') no-repeat left center;
+}
+.icon-form{
+	background:url('icons/easylife/form.png') no-repeat left center;
+}
+.icon-chart{
+	background:url('icons/easylife/chart.png') no-repeat left center;
+}
+.icon-baidu{
+	background:url('icons/easylife/baidu.png') no-repeat left center;
+}
+.icon-sina{
+	background:url('icons/easylife/sina.png') no-repeat left center;
+}
+.icon-tool{
+	background:url('icons/easylife/tool.png') no-repeat center center;
+}
+.icon-system{
+	background:url('icons/easylife/system.png') no-repeat center center;
 }

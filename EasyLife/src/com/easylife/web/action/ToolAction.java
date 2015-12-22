@@ -20,8 +20,20 @@ public class ToolAction extends BaseAction {
 	private String newsType;//1是旅游 2是要闻 3是应用 4是游戏
 	private String apikey = "a39b7a474370fd348817322b5bd12f00";
 
+	public String index(){
+		return "index";
+	}
+	
 	public String phoneNumber() {
 		return "phoneSearch";
+	}
+	
+	public String baidu(){
+		return "baidu";
+	}
+	
+	public String sina(){
+		return "sina";
 	}
 
 	public String searchPhoneNumber() {

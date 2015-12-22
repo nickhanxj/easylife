@@ -7,7 +7,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Easy Life</title>
 	<link rel="shortcut icon" type="image/x-icon" href="images/logo.ico" />
-	<jsp:include page="WEB-INF/jsps/general/general.jsp"></jsp:include>
+	<jsp:include page="/WEB-INF/jsps/general/general.jsp"></jsp:include>
 	<link rel="stylesheet" href="js/layer/skin/layer.css" type="text/css" media="screen" />
 	<script type="text/javascript" src="js/layer/layer.js"></script>
 	<script type="text/javascript" src="js/layer/extend/layer.ext.js"></script>
@@ -38,13 +38,17 @@
 	li{
 		list-style-type: none;
 		margin-top: 5px;
-		background-color: #ADD8E6;
-		text-align: center;
-		height: 20px;
+/* 		background-color: #ADD8E6; */
+/* 		text-align: center; */
+		height: 25px;
 		cursor: pointer;
+		padding-top: 11px;
+		font-family: "微软雅黑";
+		padding-left: 20px;
+		font-weight: bold;
 	}
 	li:HOVER {
-		background-color: #B0E2FF;
+		background-color: #1E90FF;
 	}
 </style>
 </head>
@@ -64,27 +68,33 @@
 	</div>
 <!-- 	<div data-options="region:'east',split:true" title="East" style="width:100px;"></div> -->
 	<div data-options="region:'west',iconCls:'icon-sysmenu'" title="系统菜单" style="width:200px;">
-		<div class="easyui-accordion" style="width:198px; height: 100%;">
+		<div class="easyui-accordion" style="width:198px;">
 			<div title="消费" data-options="iconCls:'icon-cost'" style="overflow:auto;padding:10px;text-align: left;">
 				<ul>
-					<li onclick="addTab('消费组', 'groupAction_groupList')">消费组</li>
-					<li onclick="addTab('消费记录', 'costAction_list')">消费记录</li>
+					<li class="icon-costgroup" onclick="addTab('消费组', 'groupAction_groupList')">消费组</li>
+					<li class="icon-costrecord" onclick="addTab('消费记录', 'costAction_list')">消费记录</li>
 				</ul>
 			</div>
 			<div title="用户" data-options="iconCls:'icon-usermenu'" style="overflow:auto;padding:10px; ">
 				<ul>
-					<li onclick="addTab('用户列表', 'userAction_list')">用户列表</li>
+					<li class="icon-userlist" onclick="addTab('用户列表', 'userAction_list')">用户列表</li>
 				</ul>
 			</div>
 			<div title="统计" data-options="iconCls:'icon-statistics'" style="overflow:auto;padding:10px;">
 				<ul>
-					<li onclick="addTab('消费统计-表格', 'costAction_personalCostChart')">消费统计-表格</li>
-					<li onclick="addTab('消费统计-图表', 'costAction_personalCostChart')">消费统计-图表</li>
+					<li class="icon-form" onclick="addTab('消费统计-表格', 'costAction_statisticsTable')">消费统计-表格</li>
+					<li class="icon-chart" onclick="addTab('消费统计-图表', 'costAction_personalCostChart')">消费统计-图表</li>
 				</ul>
 			</div>
-			<div title="系统" data-options="iconCls:'icon-settings'" style="overflow:auto;padding:10px;">
+			<div title="常用" data-options="iconCls:'icon-tool'" style="overflow:auto;padding:10px;">
 				<ul>
-					<li onclick="addTab('系统设置', '')">系统设置</li>
+					<li class="icon-baidu" onclick="addTab('百度', 'toolAction_baidu')">百度</li>
+					<li class="icon-sina" onclick="addTab('新浪新闻', 'toolAction_sina')">新浪新闻</li>
+				</ul>
+			</div>
+			<div title="系统" data-options="iconCls:'icon-system'" style="overflow:auto;padding:10px;">
+				<ul>
+					<li class="icon-settings" onclick="addTab('系统设置', 'toolAction_sina')">系统设置</li>
 				</ul>
 			</div>
 		</div>

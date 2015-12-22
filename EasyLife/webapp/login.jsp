@@ -67,6 +67,9 @@
 	.refreshCode{
 		cursor: pointer;
 	}
+	.login-input{
+		padding-left: 20px;
+	}
 </style>
 </head>
 <body>
@@ -83,15 +86,15 @@
 				</tr>
 				<tr>
 					<td rowspan="3"><img alt="" src="images/user.png"> </td>
-					<td style="text-align: left;"><input type="text" placeholder="请输入用户名或邮箱" name="user.userName"></td>
+					<td style="text-align: left;"><input class="icon-user-login login-input" type="text" placeholder="请输入用户名或邮箱" name="user.userName"></td>
 				</tr>
 				<tr>
-					<td style="text-align: left;"><input type="password" placeholder="请输入密码" name="user.password"></td>
+					<td style="text-align: left;"><input class="icon-password-login login-input" type="password" placeholder="请输入密码" name="user.password"></td>
 				</tr>
 				<tr>
 					<td style="text-align: left;">
 						<div>
-						<input class="validateCode" type="text" placeholder="请输入验证码" name="vcode">
+						<input class="validateCode icon-code-login login-input" type="text" placeholder="请输入验证码" name="vcode">
 						<img alt="" title="换一张" onclick="reloadImg()" src="" class="validateCode refreshCode">
 						</div>
 					</td>
@@ -99,7 +102,8 @@
 				<tr>
 					<td colspan="2" style="text-align: center;">
 						<span class="loginBtn" onclick="sumitForm()">登录</span>
-						<button type="reset" class="loginBtn" onclick="reloadImg()">重置</button><br>
+						<span class="loginBtn" onclick="reset()">重置</span>
+						<button type="reset" class="loginBtn" onclick="reloadImg()" style="display: none;" id="resetBtn"></button><br>
 					</td>
 				</tr>
 				<tr>
@@ -130,8 +134,22 @@
 		});
 	}
 	
+	function reset(){
+		$("#resetBtn").click();
+	}
+	
+	$(document).bind("keydown",function(event){
+		if(event.keyCode==13){
+			sumitForm();
+		}
+	});
+	
+	if(top!=window){
+		top.location.href = window.location.href;
+	}
+	
 	function enterSystem(){
-		window.location.href="index.jsp";
+		window.location.href="toolAction_index";
 	}
 	
 	$(function(){

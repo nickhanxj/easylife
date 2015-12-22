@@ -3,6 +3,7 @@ package com.easylife.web.action;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -178,6 +179,38 @@ public class CostRecordAction extends BaseAction {
 		CostRecord costRecord = recordService.getById(recordId);
 		putContext("record", costRecord);
 		return "edit";
+	}
+	
+	// 统计信息
+	public String statisticsTable() {
+		if(StringUtils.isBlank(year) && StringUtils.isBlank(month)){
+			Calendar calendar = Calendar.getInstance();
+			year = String.valueOf(calendar.get(Calendar.YEAR));
+			month = String.valueOf(calendar.get(Calendar.MONTH)+1);
+		}
+		Map<String, Object> monthTotal = recordService.monthTotal(year, month);
+		putContext("monthTotal", monthTotal);
+		List<Map<String, Object>> rList = new ArrayList<Map<String, Object>>();
+		for (int i = 1; i <= 3; i++) {
+			Map<String, Object> rMap = new HashMap<String, Object>();
+			Map<String, Object> statisticResult = recordService
+					.statisticPerson(year, month, i + "");
+			String username = "";
+			if (i == 1) {
+				username = "韩晓军";
+			} else if (i == 2) {
+				username = "胡丰盛";
+			} else if (i == 3) {
+				username = "李洪亮";
+			}
+			rMap.put("user", username);
+			rMap.put("statisticResult", statisticResult);
+			rList.add(rMap);
+		}
+		putContext("cyear", year);
+		putContext("cmonth", month);
+		putContext("result", rList);
+		return "statistics";
 	}
 
 	// 统计信息

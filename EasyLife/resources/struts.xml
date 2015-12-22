@@ -84,6 +84,7 @@
 		<action name="costAction_*" class="com.easylife.web.action.CostRecordAction" method="{1}">
 			<result name="list">/WEB-INF/jsps/costrecord/costrecordList.jsp</result>
 			<result name="personalCostChart">/WEB-INF/jsps/costrecord/chart.jsp</result>
+			<result name="statistics">/WEB-INF/jsps/costrecord/statistics.jsp</result>
 		</action>
 		<action name="groupAction_*" class="com.easylife.web.action.CostGroupAction" method="{1}">
 			<result name="groupList">/WEB-INF/jsps/costrecord/costgroupList.jsp</result>
@@ -92,6 +93,9 @@
 			<result name="phoneSearch">/WEB-INF/jsps/tools/phoneSearch.jsp</result>
 			<result name="todayhistory">/WEB-INF/jsps/tools/todayhistory.jsp</result>
 			<result name="news">/WEB-INF/jsps/tools/news.jsp</result>
+			<result name="index">/WEB-INF/jsps/index.jsp</result>
+			<result name="baidu" type="redirect">http://www.baidu.com</result>
+			<result name="sina" type="redirect">http://news.sina.com.cn/</result>
 		</action>
 		<action name="userAction_*" class="com.easylife.web.action.UserAction" method="{1}">
 			<result name="list">/WEB-INF/jsps/user/userList.jsp</result>
