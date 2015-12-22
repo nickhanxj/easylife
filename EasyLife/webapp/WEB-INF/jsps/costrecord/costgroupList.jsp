@@ -22,7 +22,7 @@
 		<div style="margin-bottom:5px">
 			<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="$('#addRecord').window('open')">新增组</a>
 			<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="getCheckedRecord()">编辑组</a>
-			<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除组</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="getCheckedRecordAndDelete()">删除组</a>
 		</div>
 	</div>
 	<div id="addRecord" class="easyui-window" title="新增消费组" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:500px;padding:10px;">
@@ -127,6 +127,33 @@
 			$("#gmembers").html(mstr);
 			$('#editRecord').window('open');
 		}
+	}
+	
+	function getCheckedRecordAndDelete(){
+		layer.confirm('确认删除选中消费组？一旦删除,不可恢复!', {
+			 btn: ['确认','取消'] //按钮
+		}, function(){
+			var data = $("#dg").datagrid("getSelections");
+			if(data.length == 0){
+				layer.msg('请选则需要删除的记录');
+			}else{
+				var ids = "";
+				for(var i = 0; i < data.length; i++){
+					ids += data[i].id+",";
+				}
+				$.ajax({
+					url:"groupAction_deleteGroup",
+					type:"POST",
+					data:{"ids":ids},
+					success:function(data){
+						layer.msg(data);
+						initGrid();
+					}
+				});
+			}
+		}, function(){
+		    
+		});
 	}
 	
 	function updateRecord(){

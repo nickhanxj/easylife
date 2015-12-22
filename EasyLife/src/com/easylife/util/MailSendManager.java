@@ -40,8 +40,8 @@ public class MailSendManager {
     }
     
     public void doSendHtmlEmail(String subject, String sendHtml,
-            List<String> receiveUser) {
-        try {
+            List<String> receiveUser) throws Exception {
+//        try {
             // 发件人
             //InternetAddress from = new InternetAddress(sender_username);
             // 下面这个是设置发送人的Nick name
@@ -74,9 +74,10 @@ public class MailSendManager {
             // 发送
             transport.sendMessage(message, message.getAllRecipients());
             //System.out.println("send success!");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }finally {
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//            finally {
             if(transport!=null){
                 try {
                     transport.close();
@@ -84,7 +85,7 @@ public class MailSendManager {
                     e.printStackTrace();
                 }
             }
-        }
+//        }
     }
     
     public static void main(String[] args) {

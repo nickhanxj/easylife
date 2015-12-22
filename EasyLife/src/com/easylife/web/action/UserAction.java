@@ -2,6 +2,8 @@ package com.easylife.web.action;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -10,20 +12,28 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
 
 import com.easylife.base.BaseAction;
 import com.easylife.domain.User;
 import com.easylife.service.UserService;
+import com.easylife.util.HttpRequestUtil;
 import com.easylife.util.ImageCodeGenerator;
+import com.easylife.util.MailSendManager;
 import com.opensymphony.xwork2.ActionContext;
 
 public class UserAction extends BaseAction {
 	private static final long serialVersionUID = 1L;
 	@Resource
 	private UserService userService;
+	private Calendar calendar;
+	MailSendManager sendManager = new MailSendManager(true);
 	private User user;
 	private String vcode;
+	private String password;
+	private String originPassword;
+	private String userIds;
 
 	public String getImageCode() {
 		String random = ImageCodeGenerator.random(4);
@@ -35,8 +45,8 @@ public class UserAction extends BaseAction {
 			File imgFolder = new File(realPath);
 			File[] listFiles = imgFolder.listFiles();
 			for (File file : listFiles) {
-				if(file.getName().contains("imagecode")){
-					File f = new File(realPath+"/imagecode");
+				if (file.getName().contains("imagecode")) {
+					File f = new File(realPath + "/imagecode");
 					File[] files = f.listFiles();
 					for (File img : files) {
 						img.delete();
@@ -44,11 +54,11 @@ public class UserAction extends BaseAction {
 				}
 			}
 			ImageCodeGenerator.render(random, new FileOutputStream(realPath
-					+ "/imagecode/"+uuid+".jpg"), 120, 30);
+					+ "/imagecode/" + uuid + ".jpg"), 120, 30);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		putJson("images/imagecode/"+uuid+".jpg");
+		putJson("images/imagecode/" + uuid + ".jpg");
 		return JSON;
 	}
 
@@ -60,6 +70,88 @@ public class UserAction extends BaseAction {
 		List<User> users = userService.getAllUsers();
 		putJson(users);
 		return JSON;
+	}
+
+	public String addUser() {
+		if (StringUtils.isBlank(user.getUserName())
+				|| StringUtils.isBlank(user.getPassword())) {
+			putJson("用户名或者密码不能为空！");
+			return JSON;
+		} else {
+			boolean hasExist = userService.hasExist(user.getUserName());
+			boolean trueNameHasExist = userService.trueNameHasExist(user
+					.getTrueName());
+			if (hasExist) {
+				putJson("该用户名已存在，请使用其他用户名！");
+				return JSON;
+			} else if (trueNameHasExist) {
+				putJson("该真实姓名已经注册过！");
+				return JSON;
+			} else {
+				try {
+					user.setRegisterDate(new Date());
+					String md5Hex = DigestUtils.md5Hex(user.getPassword());
+					user.setPassword(md5Hex);
+					userService.addUser(user);
+					putJson("添加成功");
+					User queryedUser = userService.getUserByName(user
+							.getUserName());
+					ActionContext.getContext().getSession()
+							.put("authUser", queryedUser);
+				} catch (Exception e) {
+					e.printStackTrace();
+					putJson("添加失败！");
+					return JSON;
+				}
+			}
+		}
+		return JSON;
+	}
+
+	public String deleteUser() {
+		String[] ids = userIds.split(",");
+		try {
+			for (String userId : ids) {
+				User u = new User();
+				u.setId(Long.valueOf(userId));
+				userService.deleteUser(u);
+			}
+			putJson("删除成功");
+		} catch (Exception e) {
+			putJson("删除失败");
+		}
+		return JSON;
+	}
+	
+	public String sendEmail(){
+		try {
+			String[] ids = userIds.split(",");
+			List<User> selectedUsers = new ArrayList<User>();
+			for (String id : ids) {
+				User u = userService.getUserByid(id);
+				selectedUsers.add(u);
+			}
+			sendEmailToUser(selectedUsers);
+			putJson("邮件发送成功");
+		} catch (Exception e) {
+			putJson("邮件发送失败");
+		}
+		return JSON;
+	}
+	
+	private void sendEmailToUser(List<User> selectedUsers) throws Exception{
+		calendar = Calendar.getInstance();
+		String year = String.valueOf(calendar.get(Calendar.YEAR));
+		String month = String.valueOf(calendar.get(Calendar.MONTH)+1);
+		List<String> receiveUser = new ArrayList<String>();
+		for (User user : selectedUsers) {
+			receiveUser.add(user.getEmail());
+		}
+		String url = "http://localhost/cost/statisticsForEmail.html";
+		String param = "year="+year+"&month="+month;
+		String sendHtml = HttpRequestUtil.sendGet(url, param, null);
+		System.out.println(sendHtml);
+		sendManager.doSendHtmlEmail(year+"年"+month+"月消费账单", sendHtml, receiveUser);
 	}
 
 	public String login() {
@@ -85,6 +177,41 @@ public class UserAction extends BaseAction {
 		return JSON;
 	}
 
+	public String userInfo() {
+		User auser = (User) ActionContext.getContext().getSession()
+				.get("authUser");
+		User selectedUser = userService.getUserByid(auser.getId() + "");
+		ActionContext.getContext().put("selectedUser", selectedUser);
+		return "userinfo";
+	}
+
+	// 登录后修改密码
+	public String resetPwd() {
+		User sessionUser = getSessionUser();
+		String newPassword = DigestUtils.md5Hex(password);
+		sessionUser.setPassword(newPassword);
+		try {
+			userService.updateUser(sessionUser);
+			putJson(STATUS_SUCCESS);
+			ActionContext.getContext().getSession().put("authUser", null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			putJson(STATUS_ERROR);
+		}
+		return JSON;
+	}
+
+	public String validateOriginPasswd() {
+		User sessionUser = getSessionUser();
+		String originPasswordMd5 = DigestUtils.md5Hex(originPassword);
+		if (originPasswordMd5.equals(sessionUser.getPassword())) {
+			putJson(STATUS_SUCCESS);
+		} else {
+			putJson(STATUS_ERROR);
+		}
+		return JSON;
+	}
+
 	public String logout() {
 		ActionContext.getContext().getSession().put("authUser", null);
 		return "login";
@@ -104,6 +231,30 @@ public class UserAction extends BaseAction {
 
 	public void setVcode(String vcode) {
 		this.vcode = vcode;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getOriginPassword() {
+		return originPassword;
+	}
+
+	public void setOriginPassword(String originPassword) {
+		this.originPassword = originPassword;
+	}
+
+	public String getUserIds() {
+		return userIds;
+	}
+
+	public void setUserIds(String userIds) {
+		this.userIds = userIds;
 	}
 
 }

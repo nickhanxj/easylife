@@ -20,36 +20,56 @@
 	<table id="dg"></table>
 	<div id="tb" style="padding:5px;height:auto">
 		<div style="margin-bottom:5px">
-			<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="$('#addRecord').window('open')">新增</a>
-			<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true">编辑</a>
-			<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="$('#addRecord').window('open')">新增</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="deleteUser()">删除</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-email" plain="true" onclick="sendCostInfo()" style="float: right;">&emsp;发送本月消费信息到邮箱</a>
 		</div>
 	</div>
 	<div id="addRecord" class="easyui-window" title="新增消费组" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:500px;padding:10px;">
-				<form id="recordForm" method="post" theme="simple">
-					<input type="hidden" name="record.attachment" id="attachment"/>
+				<form id="addUserForm" method="post">
 					<table style="width: 100%;">
 						<tr>
 							<td>用户名</td>
 							<td>
-								<input name="group.groupName" placeholder="组名" style="width: 145px;"/>
+								<input name="user.userName" placeholder="用户名" style="width: 145px;"/>
+							</td>
+						</tr>
+						<tr>
+							<td>真实姓名</td>
+							<td>
+								<input name="user.trueName" placeholder="真实姓名" style="width: 145px;"/>
+							</td>
+						</tr>
+						<tr>
+							<td>邮箱</td>
+							<td>
+								<input name="user.email" placeholder="邮箱" style="width: 145px;"/>
 							</td>
 						</tr>
 						<tr>
 							<td>登录密码</td>
 							<td>
-								<textarea name="group.mark" placeholder="备注" style="width: 145px;"></textarea>
+								<input name="user.password" placeholder="密码" style="width: 145px;"/>
 							</td>
 						</tr>	
 						<tr>
+							<td>电话</td>
+							<td>
+								<input name="user.phoneNumber" placeholder="电话" style="width: 145px;"/>
+							</td>
+						</tr>
+						<tr>
 							<td>用户类型：</td>
 							<td>
-								<textarea name="members" placeholder="备注" rows="5" style="width: 145px;"></textarea>
+								<select name="user.type" style="width: 145px;">
+									<option value="1">普通用户</option>
+									<option value="0">管理员</option>
+								</select>
 							</td>
 						</tr>
 						<tr>
 							<td colspan="2">
-								<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'" onclick="submitData()">保存</a>
+								<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save'" onclick="submitData()">保存</a>
 								<a href="/cost/list.html" class="easyui-linkbutton">取消</a>
 							</td>
 						</tr>				
@@ -60,21 +80,79 @@
 <script type="text/javascript">
 	function submitData(){
 		$.ajax({
-			url:"groupAction_add",
+			url:"userAction_addUser",
 			type:"POST",
-			data:$("#recordForm").serialize(),
+			data:$("#addUserForm").serialize(),
 			success: function(data){
-				if(data == 1){
-					layer.msg('保存成功！');
-				}else{
-					layer.msg('保存失败！');
-				}
+				layer.msg(data);
 				$('#addRecord').window('close');
 				$("#dg").datagrid('reload');
 // 				setTimeout("queryData()",1000);
 			}
 		});
 	}
+	
+	function deleteUser(){
+		layer.confirm('确认删除选中用户？一旦删除,不可恢复!', {
+			 btn: ['确认','取消'] //按钮
+		}, function(){
+			deleteSelectedUser();
+		}, function(){
+		    
+		});
+	}
+	
+	function deleteSelectedUser(){
+		var data = $("#dg").datagrid("getSelections");
+		if(data.length == 0){
+			layer.msg('请选则需要删除的用户');
+		}else{
+			var ids = "";
+			for(var i = 0; i < data.length; i++){
+				ids += data[i].id+",";
+			}
+			$.ajax({
+				url:"userAction_deleteUser",
+				type:"POST",
+				data:{"userIds":ids},
+				success: function(data){
+					layer.msg(data);
+					$("#dg").datagrid('reload');
+				}
+			});
+		}
+	}
+	
+	function sendCostInfo(){
+		layer.confirm('确认发送本月消费信息到选中用户的邮箱？', {
+			 btn: ['确认','取消'] //按钮
+		}, function(){
+			sendEmailToSelectedUser();
+		}, function(){
+		    
+		});
+	}
+	
+	function sendEmailToSelectedUser(){
+		var data = $("#dg").datagrid("getSelections");
+		if(data.length == 0){
+			layer.msg('请选择发送邮件的用户');
+		}else{
+			var ids = "";
+			for(var i = 0; i < data.length; i++){
+				ids += data[i].id+",";
+			}
+			$.ajax({
+				url:"userAction_sendEmail",
+				type:"POST",
+				data:{"userIds":ids},
+				success: function(data){
+					layer.msg(data);
+				}
+			});
+		}
+	}
+	
 
 // 	function queryData(){
 // 		$("#dg").datagrid('load',{

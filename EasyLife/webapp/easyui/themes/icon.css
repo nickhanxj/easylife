@@ -71,3 +71,24 @@
 .icon-menu-level_3{
 	background:url('icons/level3.png') no-repeat center center;
 }
+.icon-changepassword{
+	background:url('icons/pwd.png') no-repeat center center;
+}
+.icon-email{
+	background:url('icons/email.png') no-repeat center center;
+}
+.icon-cost{
+	background:url('icons/cost.png') no-repeat center center;
+}
+.icon-usermenu{
+	background:url('icons/user_menu.png') no-repeat center center;
+}
+.icon-statistics{
+	background:url('icons/statistics.png') no-repeat center center;
+}
+.icon-settings{
+	background:url('icons/settings.png') no-repeat center center;
+}
+.icon-sysmenu{
+	background:url('icons/sysmenu.png') no-repeat center center;
+}

@@ -40,4 +40,8 @@ public class CostGroupService {
 	public void update(CostGroup group){
 		groupDao.update(group);
 	}
+	
+	public void delete(CostGroup group){
+		groupDao.delete(group);
+	}
 }

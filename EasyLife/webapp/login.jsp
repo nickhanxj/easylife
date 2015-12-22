@@ -20,8 +20,9 @@
 	
 	.login{
 		width: 400px;
-		margin-left: 940px;
-		margin-top: 260px;
+		float:right;
+		margin-right:50px;
+		margin-top: 15%;
 		border: 8px #B0C4DE solid;
 		text-align: center;
 	}
@@ -71,6 +72,7 @@
 <body>
 	<div>
 		<img src="images/login.jpg" class="back-img"/>
+		<img alt="" src="images/11.jpg" style="margin-top: 18%;margin-left: 100px;">
 		<div class="login">
 			<form id="loginForm">
 			<table>

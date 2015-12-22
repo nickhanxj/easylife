@@ -95,6 +95,7 @@
 		</action>
 		<action name="userAction_*" class="com.easylife.web.action.UserAction" method="{1}">
 			<result name="list">/WEB-INF/jsps/user/userList.jsp</result>
+			<result name="userinfo">/WEB-INF/jsps/user/user_info.jsp</result>
 		</action>
 <!-- 		<action name="backendAction_*" class="com.demo.ssh.action.BackendAction" method="{1}"> -->
 <!-- 			<result name="backend">/WEB-INF/views/backend/backend.jsp</result> -->

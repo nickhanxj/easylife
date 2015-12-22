@@ -21,6 +21,7 @@ public class CostGroupAction extends BaseAction {
 	private CostGroupService groupService;
 	private CostGroup group;
 	private String members;
+	private String ids;
 	private int page;
 	private int rows;
 
@@ -83,6 +84,22 @@ public class CostGroupAction extends BaseAction {
 		}
 		return JSON;
 	}
+	
+	public String deleteGroup(){
+		try {
+			String[] sid = ids.split(",");
+			for (String id : sid) {
+				CostGroup group = new CostGroup();
+				group.setId(Long.valueOf(id));
+				groupService.delete(group);
+			}
+			putJson("删除成功！");
+		} catch (Exception e) {
+			e.printStackTrace();
+			putJson("删除失败！");
+		}
+		return JSON;
+	}
 
 	public CostGroup getGroup() {
 		return group;
@@ -114,6 +131,14 @@ public class CostGroupAction extends BaseAction {
 
 	public void setRows(int rows) {
 		this.rows = rows;
+	}
+
+	public String getIds() {
+		return ids;
+	}
+
+	public void setIds(String ids) {
+		this.ids = ids;
 	}
 
 }

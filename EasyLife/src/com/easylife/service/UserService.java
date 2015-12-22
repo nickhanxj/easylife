@@ -20,6 +20,10 @@ public class UserService {
 		userDao.addUser(user);
 	}
 	
+	public void deleteUser(User user){
+		userDao.delete(user);
+	}
+	
 	public void updateUser(User user){
 		userDao.updateUser(user);
 	}

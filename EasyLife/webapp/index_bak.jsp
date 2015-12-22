@@ -19,32 +19,12 @@
 		margin-right: 50px;
 		font-family: "微软雅黑";
 	}
-	span>a{
+	a{
 		color: white;
 		text-decoration: none;
 	}
-	span>a:HOVER {
+	a:HOVER {
 		color: #ADD8E6;
-	}
-	li>a{
-		text-decoration: none;
-		font-weight: bold;
-		color: #303030;
-	}
-	ul,li{
-		margin: 0px;
-		padding: 0px;
-	}
-	li{
-		list-style-type: none;
-		margin-top: 5px;
-		background-color: #ADD8E6;
-		text-align: center;
-		height: 20px;
-		cursor: pointer;
-	}
-	li:HOVER {
-		background-color: #B0E2FF;
 	}
 </style>
 </head>
@@ -63,31 +43,8 @@
 		</span>
 	</div>
 <!-- 	<div data-options="region:'east',split:true" title="East" style="width:100px;"></div> -->
-	<div data-options="region:'west',iconCls:'icon-sysmenu'" title="系统菜单" style="width:200px;">
-		<div class="easyui-accordion" style="width:198px; height: 100%;">
-			<div title="消费" data-options="iconCls:'icon-cost'" style="overflow:auto;padding:10px;text-align: left;">
-				<ul>
-					<li onclick="addTab('消费组', 'groupAction_groupList')">消费组</li>
-					<li onclick="addTab('消费记录', 'costAction_list')">消费记录</li>
-				</ul>
-			</div>
-			<div title="用户" data-options="iconCls:'icon-usermenu'" style="overflow:auto;padding:10px; ">
-				<ul>
-					<li onclick="addTab('用户列表', 'userAction_list')">用户列表</li>
-				</ul>
-			</div>
-			<div title="统计" data-options="iconCls:'icon-statistics'" style="overflow:auto;padding:10px;">
-				<ul>
-					<li onclick="addTab('消费统计-表格', 'costAction_personalCostChart')">消费统计-表格</li>
-					<li onclick="addTab('消费统计-图表', 'costAction_personalCostChart')">消费统计-图表</li>
-				</ul>
-			</div>
-			<div title="系统" data-options="iconCls:'icon-settings'" style="overflow:auto;padding:10px;">
-				<ul>
-					<li onclick="addTab('系统设置', '')">系统设置</li>
-				</ul>
-			</div>
-		</div>
+	<div data-options="region:'west'" title="系统菜单" style="width:200px;">
+		<ul class="easyui-tree" id="menu" data-options="url:'test/tree/tree_data.json',method:'get',animate:true"></ul>
 	</div>
 	<div data-options="region:'center'" id="mainArea" class="easyui-tabs">
 		<div title="首页" style="padding:10px">
