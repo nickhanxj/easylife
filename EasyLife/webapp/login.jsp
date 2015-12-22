@@ -90,14 +90,14 @@
 					<td style="text-align: left;">
 						<div>
 						<input class="validateCode" type="text" placeholder="请输入验证码" name="vcode">
-						<img alt="" title="换一张" onclick="reloadImg()" src="images/imagecode/imagecode.jpg" class="validateCode refreshCode">
+						<img alt="" title="换一张" onclick="reloadImg()" src="" class="validateCode refreshCode">
 						</div>
 					</td>
 				</tr>
 				<tr>
 					<td colspan="2" style="text-align: center;">
 						<span class="loginBtn" onclick="sumitForm()">登录</span>
-						<span class="loginBtn" onclick="resetForm()">重置</span><br>
+						<button type="reset" class="loginBtn" onclick="reloadImg()">重置</button><br>
 					</td>
 				</tr>
 				<tr>
@@ -121,24 +121,27 @@
 					$("#message").html("<font color='green'>登录成功！正在进入系统...</font>");
 					setTimeout("enterSystem()",1000);
 				}else{
+					reloadImg();
 					$("#message").html("<font color='red'>"+data+"</font>");
 				}
 			}
 		});
 	}
+	
 	function enterSystem(){
 		window.location.href="index.jsp";
 	}
 	
 	$(function(){
-// 		reloadImg();
+		reloadImg();
 	});
 	
 	function reloadImg(){
 		$.ajax({
-			url:"userAction_getImageCode",
+			url:"userAction_getImageCode?rnd="+Math.random(),
 			type:"POST",
 			success: function(data){
+				$(".refreshCode").attr("src",data);
 			}
 		});
 	}

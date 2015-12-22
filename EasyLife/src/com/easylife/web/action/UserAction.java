@@ -1,8 +1,10 @@
 package com.easylife.web.action;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -26,15 +28,27 @@ public class UserAction extends BaseAction {
 	public String getImageCode() {
 		String random = ImageCodeGenerator.random(4);
 		ImageCodeGenerator.remeberCode = random;
+		UUID uuid = UUID.randomUUID();
 		try {
 			String realPath = ServletActionContext.getServletContext()
 					.getRealPath("/images");
+			File imgFolder = new File(realPath);
+			File[] listFiles = imgFolder.listFiles();
+			for (File file : listFiles) {
+				if(file.getName().contains("imagecode")){
+					File f = new File(realPath+"/imagecode");
+					File[] files = f.listFiles();
+					for (File img : files) {
+						img.delete();
+					}
+				}
+			}
 			ImageCodeGenerator.render(random, new FileOutputStream(realPath
-					+ "/imagecode/imagecode.jpg"), 120, 30);
+					+ "/imagecode/"+uuid+".jpg"), 120, 30);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		putJson(random);
+		putJson("images/imagecode/"+uuid+".jpg");
 		return JSON;
 	}
 
@@ -49,14 +63,14 @@ public class UserAction extends BaseAction {
 	}
 
 	public String login() {
-		if (!ImageCodeGenerator.remeberCode.equals(vcode)) {
-			putJson("验证码错误！");
-			return JSON;
-		}
 		user.setPassword(DigestUtils.md5Hex(user.getPassword()));
 		User authUser = userService.authUser(user);
 		if (authUser == null) {
 			putJson("用户名或密码错误！");
+			return JSON;
+		}
+		if (!ImageCodeGenerator.remeberCode.equals(vcode)) {
+			putJson("验证码错误！");
 			return JSON;
 		}
 		ActionContext.getContext().getSession().put("authUser", authUser);
