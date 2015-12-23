@@ -96,6 +96,7 @@
 			<result name="index">/WEB-INF/jsps/index.jsp</result>
 			<result name="baidu" type="redirect">http://www.baidu.com</result>
 			<result name="sina" type="redirect">http://news.sina.com.cn/</result>
+			<result name="sysSettings">/WEB-INF/jsps/tools/sysSettings.jsp</result>
 		</action>
 		<action name="userAction_*" class="com.easylife.web.action.UserAction" method="{1}">
 			<result name="list">/WEB-INF/jsps/user/userList.jsp</result>

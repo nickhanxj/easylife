@@ -1,5 +1,6 @@
 package com.easylife.dao;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,8 +16,8 @@ import com.easylife.domain.User;
 public class UserDao extends BaseDao<User>{
 	private static final long serialVersionUID = 1L;
 
-	public void addUser(User user) {
-		getSession().save(user);
+	public Serializable addUser(User user) {
+		return getSession().save(user);
 	}
 
 	public void updateUser(User user) {

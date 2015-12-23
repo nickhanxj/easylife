@@ -94,7 +94,8 @@
 			</div>
 			<div title="系统" data-options="iconCls:'icon-system'" style="overflow:auto;padding:10px;">
 				<ul>
-					<li class="icon-settings" onclick="addTab('系统设置', 'toolAction_sina')">系统设置</li>
+					<li class="icon-settings" onclick="addTab('系统设置', 'toolAction_systemSettings')">系统设置</li>
+					<li class="icon-log" onclick="addTab('系统日志', 'toolAction_systemSettings')">系统日志</li>
 				</ul>
 			</div>
 		</div>

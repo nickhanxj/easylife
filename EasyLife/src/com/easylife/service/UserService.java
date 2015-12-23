@@ -1,5 +1,6 @@
 package com.easylife.service;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -16,8 +17,8 @@ public class UserService {
 	@Resource
 	private UserDao userDao;
 	
-	public void addUser(User user){
-		userDao.addUser(user);
+	public Serializable addUser(User user){
+		return userDao.addUser(user);
 	}
 	
 	public void deleteUser(User user){

@@ -4,10 +4,14 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import net.sf.json.JSONObject;
 
 import com.easylife.base.BaseAction;
+import com.easylife.domain.SystemTheme;
 import com.easylife.domain.tools.TodayHistory;
+import com.easylife.service.SystemThemeService;
 import com.easylife.util.HttpRequestUtil;
 
 public class ToolAction extends BaseAction {
@@ -17,22 +21,52 @@ public class ToolAction extends BaseAction {
 	private String phoneSearchUrl = "http://apis.baidu.com/apistore/mobilephoneservice/mobilephone";
 	private String todayhistoryUrl = "http://apis.baidu.com/netpopo/todayhistory/todayhistory";
 	private String newsUrl = "http://apis.baidu.com/songshuxiansheng/news/news";
-	private String newsType;//1是旅游 2是要闻 3是应用 4是游戏
-	private String apikey = "a39b7a474370fd348817322b5bd12f00";
+	private String newsType;// 1是旅游 2是要闻 3是应用 4是游戏
+	private String apikey = "a39b7a474370fd3|48817322b5bd12f00";
+	@Resource
+	private SystemThemeService themeService;
+	private SystemTheme systemTheme;
+	
+	public String changeTheme(){
+		try {
+			SystemTheme theme = themeService.findByUserId(getSessionUser().getId());
+			if(theme == null){
+				systemTheme.setUserId(getSessionUser().getId());
+				themeService.addTheme(systemTheme);
+			}else{
+				theme.setTheme(systemTheme.getTheme());
+				themeService.updateTheme(theme);
+			}
+			putJson("更换主题成功，下次登录生效！");
+		} catch (Exception e) {
+			putJson("更换主题失败");
+		}
+		return JSON;
+	}
 
-	public String index(){
+	public String systemSettings() {
+		SystemTheme theme = themeService.findByUserId(getSessionUser().getId());
+		if(theme == null){
+			putContext("sysTheme", "'ui-cupertino'");
+		}else{
+			putContext("sysTheme", "'"+theme.getTheme()+"'");
+		}
+		return "sysSettings";
+	}
+
+	public String index() {
 		return "index";
 	}
-	
+
 	public String phoneNumber() {
 		return "phoneSearch";
 	}
-	
-	public String baidu(){
+
+	public String baidu() {
 		return "baidu";
 	}
-	
-	public String sina(){
+
+	public String sina() {
 		return "sina";
 	}
 
@@ -64,7 +98,7 @@ public class ToolAction extends BaseAction {
 	}
 
 	public String news() {
-		String response = HttpRequestUtil.sendGet(newsUrl, null ,apikey);
+		String response = HttpRequestUtil.sendGet(newsUrl, null, apikey);
 		Map<String, Class> classMap = new HashMap<String, Class>();
 		classMap.put("retData", Map.class);
 		Map map = (Map) JSONObject.toBean(JSONObject.fromObject(response),
@@ -93,6 +127,14 @@ public class ToolAction extends BaseAction {
 
 	public void setNewsType(String newsType) {
 		this.newsType = newsType;
+	}
+
+	public SystemTheme getSystemTheme() {
+		return systemTheme;
+	}
+
+	public void setSystemTheme(SystemTheme systemTheme) {
+		this.systemTheme = systemTheme;
 	}
 
 }

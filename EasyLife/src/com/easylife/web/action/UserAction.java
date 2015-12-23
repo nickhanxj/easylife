@@ -16,7 +16,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
 
 import com.easylife.base.BaseAction;
+import com.easylife.domain.SystemTheme;
 import com.easylife.domain.User;
+import com.easylife.service.SystemThemeService;
 import com.easylife.service.UserService;
 import com.easylife.util.HttpRequestUtil;
 import com.easylife.util.ImageCodeGenerator;
@@ -27,6 +29,8 @@ public class UserAction extends BaseAction {
 	private static final long serialVersionUID = 1L;
 	@Resource
 	private UserService userService;
+	@Resource
+	private SystemThemeService themeService;
 	private Calendar calendar;
 	MailSendManager sendManager = new MailSendManager(true);
 	private User user;
@@ -94,10 +98,8 @@ public class UserAction extends BaseAction {
 					user.setPassword(md5Hex);
 					userService.addUser(user);
 					putJson("添加成功");
-					User queryedUser = userService.getUserByName(user
-							.getUserName());
-					ActionContext.getContext().getSession()
-							.put("authUser", queryedUser);
+					User queryedUser = userService.getUserByName(user.getUserName());
+					ActionContext.getContext().getSession().put("authUser", queryedUser);
 				} catch (Exception e) {
 					e.printStackTrace();
 					putJson("添加失败！");
@@ -164,6 +166,13 @@ public class UserAction extends BaseAction {
 		if (!ImageCodeGenerator.remeberCode.equals(vcode)) {
 			putJson("验证码错误！");
 			return JSON;
+		}
+		//获取用户使用的主题
+		SystemTheme theme = themeService.findByUserId(authUser.getId());
+		if(theme != null){
+			ActionContext.getContext().getSession().put("systemTheme", theme.getTheme());
+		}else{
+			ActionContext.getContext().getSession().put("systemTheme", "ui-cupertino");
 		}
 		ActionContext.getContext().getSession().put("authUser", authUser);
 		// 更新用户信息
