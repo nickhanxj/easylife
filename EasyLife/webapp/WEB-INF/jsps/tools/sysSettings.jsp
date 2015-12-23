@@ -16,6 +16,10 @@
 		td{
 			border: 1px gray solid;
 		}
+		td:HOVER {
+			background-color: lightblue;
+			cursor: pointer;
+		}
 	</style>
 </head>
 <body>
@@ -25,16 +29,16 @@
 				 <div id="imgs" class="imgs">
 				<table style="width: 100%;">
 					<tr>
-						<td><img alt="" class="theme-view"  src="images/themes/default_theme.png"> </td>
-						<td><img alt="" class="theme-view" src="images/themes/classic_theme.png"></td>
+						<td title="单击选择"><img title="预览主题" class="theme-view" onclick="previewImg(this)" src="images/themes/default_theme.png"> </td>
+						<td title="单击选择"><img title="预览主题" class="theme-view" onclick="previewImg(this)" src="images/themes/classic_theme.png"></td>
 					</tr>
 					<tr>
-						<td><img alt="" class="theme-view" src="images/themes/black_theme.png"></td>
-						<td><img alt="" class="theme-view" src="images/themes/gray_theme.png"> </td>
+						<td title="单击选择"><img title="预览主题" class="theme-view" onclick="previewImg(this)" src="images/themes/black_theme.png"></td>
+						<td title="单击选择"><img title="预览主题" class="theme-view" onclick="previewImg(this)" src="images/themes/gray_theme.png"> </td>
 					</tr>
 					<tr>
-						<td><img alt="" class="theme-view" src="images/themes/green_theme.png"></td>
-						<td><img alt="" class="theme-view" src="images/themes/white_theme.png"> </td>
+						<td title="单击选择"><img title="预览主题" class="theme-view" onclick="previewImg(this)" src="images/themes/green_theme.png"></td>
+						<td title="单击选择"><img title="预览主题" class="theme-view" onclick="previewImg(this)" src="images/themes/white_theme.png"> </td>
 					</tr>
 				</table>
 				</div>
@@ -63,5 +67,18 @@
 	$(function(){
 		$("#themeVal").combobox('setValue',${sysTheme});
 	});
+	
+	function previewImg(t){
+		var imgPath = $(t).attr("src");
+		layer.open({
+		    type: 1,
+		    title: false,
+		    closeBtn: 0,
+		    area: '1000px',
+		    skin: 'layui-layer-nobg', //没有背景色
+		    shadeClose: true,
+		    content: '<img alt="" width="1000px;" src="'+imgPath+'">'
+		});
+	}
 </script>
 </html>
