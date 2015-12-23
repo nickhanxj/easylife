@@ -125,6 +125,9 @@
 .icon-log{
 	background:url('icons/easylife/log.png') no-repeat left center;
 }
+.icon-selected{
+	background:url('icons/easylife/ok.png') no-repeat left center;
+}
 .icon-tool{
 	background:url('icons/easylife/tool.png') no-repeat center center;
 }
