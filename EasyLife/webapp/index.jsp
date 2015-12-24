@@ -1,0 +1,1 @@
+<% response.sendRedirect("toolAction_index");%>

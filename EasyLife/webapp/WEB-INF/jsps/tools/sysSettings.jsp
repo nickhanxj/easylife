@@ -20,6 +20,9 @@
 			background-color: #EAEAEA;
 			cursor: pointer;
 		}
+		.usingTheme{
+			border: 1px green solid;
+		}
 	</style>
 </head>
 <body>
@@ -76,7 +79,8 @@
 		for(var i = 0; i < themeArea.length; i++){
 			var themeValue = $(themeArea[i]).attr("class");
 			if(themeValue == ${sysTheme}){
-				$(themeArea[i]).addClass("icon-selected");
+				$(themeArea[i]).addClass("icon-used");
+				$(themeArea[i]).addClass("usingTheme");
 			}
 		}
 	});

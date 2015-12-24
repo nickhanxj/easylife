@@ -9,10 +9,12 @@ import javax.annotation.Resource;
 import net.sf.json.JSONObject;
 
 import com.easylife.base.BaseAction;
+import com.easylife.domain.SystemLog;
 import com.easylife.domain.SystemTheme;
 import com.easylife.domain.tools.TodayHistory;
 import com.easylife.service.SystemThemeService;
 import com.easylife.util.HttpRequestUtil;
+import com.easylife.util.Page;
 
 public class ToolAction extends BaseAction {
 	private static final long serialVersionUID = 1L;
@@ -26,30 +28,54 @@ public class ToolAction extends BaseAction {
 	@Resource
 	private SystemThemeService themeService;
 	private SystemTheme systemTheme;
-	
-	public String changeTheme(){
+	private int page;
+	private int rows;
+	private String operation;
+
+	public String log() {
+		return "sysLog";
+	}
+
+	public String sysLog() {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("operation", operation);
+		Page<SystemLog> logs = logService.getLogs(page, rows, params);
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("total", logs.getTotalRow());
+		data.put("rows", logs.getRows());
+		putJson(data);
+		return JSON;
+	}
+
+	public String changeTheme() {
 		try {
-			SystemTheme theme = themeService.findByUserId(getSessionUser().getId());
-			if(theme == null){
+			SystemTheme theme = themeService.findByUserId(getSessionUser()
+					.getId());
+			if (theme == null) {
 				systemTheme.setUserId(getSessionUser().getId());
 				themeService.addTheme(systemTheme);
-			}else{
+			} else {
 				theme.setTheme(systemTheme.getTheme());
 				themeService.updateTheme(theme);
 			}
 			putJson("更换主题成功，下次登录生效！");
+			addLog(getSessionUser().getUserName(),
+					"更换系统主题为【" + systemTheme.getTheme() + "】", "成功", null);
 		} catch (Exception e) {
 			putJson("更换主题失败");
+			addLog(getSessionUser().getUserName(),
+					"更换系统主题为【" + systemTheme.getTheme() + "】", "失败",
+					e.getMessage());
 		}
 		return JSON;
 	}
 
 	public String systemSettings() {
 		SystemTheme theme = themeService.findByUserId(getSessionUser().getId());
-		if(theme == null){
+		if (theme == null) {
 			putContext("sysTheme", "'ui-cupertino'");
-		}else{
-			putContext("sysTheme", "'"+theme.getTheme()+"'");
+		} else {
+			putContext("sysTheme", "'" + theme.getTheme() + "'");
 		}
 		return "sysSettings";
 	}
@@ -135,6 +161,30 @@ public class ToolAction extends BaseAction {
 
 	public void setSystemTheme(SystemTheme systemTheme) {
 		this.systemTheme = systemTheme;
+	}
+
+	public int getPage() {
+		return page;
+	}
+
+	public void setPage(int page) {
+		this.page = page;
+	}
+
+	public int getRows() {
+		return rows;
+	}
+
+	public void setRows(int rows) {
+		this.rows = rows;
+	}
+
+	public String getOperation() {
+		return operation;
+	}
+
+	public void setOperation(String operation) {
+		this.operation = operation;
 	}
 
 }

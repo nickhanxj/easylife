@@ -19,9 +19,7 @@ public class ImageCodeGenerator {
 	 //随机生成包含验证码字符串
 	 public static String random(int num){
 	  //初始化种子
-	  String[] str={"0","1","2","3","4","5","6","7","8","9",
-	       "a","b","c","d","e","f","g","h","i","j",
-	       "k","l","m","n","p","q","r","s","t","u","w","x"};
+	  String[] str={"0","1","2","3","4","5","6","7","8","9"};
 	  int number=str.length;
 	  //接收随机字符
 	  String text = "";

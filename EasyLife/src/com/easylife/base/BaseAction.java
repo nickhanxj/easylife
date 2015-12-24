@@ -2,7 +2,13 @@ package com.easylife.base;
 
 import java.text.SimpleDateFormat;
 
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.easylife.domain.SystemLog;
 import com.easylife.domain.User;
+import com.easylife.service.SystemLogService;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -20,6 +26,19 @@ public class BaseAction extends ActionSupport {
 	public static final String STATUS_ERROR = "2";
 	public static final String MESSAGE = "message";
 	protected SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
+	@Resource
+	protected SystemLogService logService;
+	
+	protected void addLog(String user, String operation, String operationResult, String causation){
+		SystemLog log = new SystemLog();
+		log.setOperation(operation);
+		log.setOperationResult(operationResult);
+		log.setUser(user);
+		if(StringUtils.isNotBlank(causation)){
+			log.setCausation(causation);
+		}
+		logService.addLog(log);
+	}
 
 	protected User getSessionUser() {
 		User currentUser = (User) ActionContext.getContext().getSession()

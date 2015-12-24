@@ -30,6 +30,10 @@ public class BaseDao<T> {
 	public void delete(T t) {
 		getSession().delete(t);
 	}
+	
+	public void excuteHqlQuery(String hql){
+		getSession().createQuery(hql);
+	}
 
 	public List<T> selectAll(Class clz) {
 		String hql = "from " + clz.getSimpleName();

@@ -66,9 +66,14 @@
 							</td>
 						</tr>
 						<tr>
-							<td>组员：</td>
+							<td>已有组员：</td>
 							<td id="gmembers">
-								<textarea  name="members" id="editMembers" placeholder="消费组成员，用逗号(英文)隔开" rows="5" style="width: 145px;display: none;"></textarea>
+							</td>
+						</tr>
+						<tr>
+							<td>新增组员：</td>
+							<td>
+								<textarea name="members" placeholder="消费组成员，用逗号(英文)隔开" rows="5" style="width: 145px;"></textarea>
 							</td>
 						</tr>
 						<tr>
@@ -117,11 +122,13 @@
 			$("#editMark").val(data[0].mark);
 			$("#groupId").val(data[0].id);
 			var members = data[0].members;
-			var m = members.split(" ");
-			var mstr = "";
-			for(var i = 0; i < m.length; i++){
-				if(m[i]){
-					mstr += "<input value='"+m[i]+"' name='checkMember' type='checkbox'>"+m[i];
+			if(members){
+				var m = members.split(" ");
+				var mstr = "";
+				for(var i = 0; i < m.length; i++){
+					if(m[i]){
+						mstr += "<input value='"+m[i]+"' name='checkMember' type='checkbox' checked='true'>"+m[i];
+					}
 				}
 			}
 			$("#gmembers").html(mstr);

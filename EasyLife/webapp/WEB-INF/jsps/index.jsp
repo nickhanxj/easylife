@@ -55,7 +55,7 @@
 <body class="easyui-layout">
 	<div data-options="region:'north'" style="height:86px; background-image: url('images/header.jpg'); background-repeat:no-repeat;background-size:100%;">
 		<span>
-		<img alt="" src="images/header_logo.jpg">
+		<img alt="" src="images/header_logo.png" style="margin-left: 10px;">
 		</span>
 		<span class="welcome">
 			<a href="javascript:void(0)" onclick="viewMyInfo()" title="查看我的信息"><font color="#ADD8E6" style="text-transform: capitalize;"><b>
@@ -94,8 +94,8 @@
 			</div>
 			<div title="系统" data-options="iconCls:'icon-system'" style="overflow:auto;padding:10px;">
 				<ul>
-					<li class="icon-settings" onclick="addTab('系统设置', 'toolAction_systemSettings')">系统设置</li>
-					<li class="icon-log" onclick="addTab('系统日志', 'toolAction_systemSettings')">系统日志</li>
+					<li class="icon-settings" onclick="addTab('主题设置', 'toolAction_systemSettings')">主题设置</li>
+					<li class="icon-log" onclick="addTab('系统日志', 'toolAction_log')">系统日志</li>
 				</ul>
 			</div>
 		</div>

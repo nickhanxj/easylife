@@ -40,7 +40,7 @@ public class UserAction extends BaseAction {
 	private String userIds;
 
 	public String getImageCode() {
-		String random = ImageCodeGenerator.random(4);
+		String random = ImageCodeGenerator.random(5);
 		ImageCodeGenerator.remeberCode = random;
 		UUID uuid = UUID.randomUUID();
 		try {
@@ -98,11 +98,11 @@ public class UserAction extends BaseAction {
 					user.setPassword(md5Hex);
 					userService.addUser(user);
 					putJson("添加成功");
-					User queryedUser = userService.getUserByName(user.getUserName());
-					ActionContext.getContext().getSession().put("authUser", queryedUser);
+					addLog(getSessionUser().getUserName(),"添加用户","成功",null);
 				} catch (Exception e) {
 					e.printStackTrace();
 					putJson("添加失败！");
+					addLog(getSessionUser().getUserName(),"添加除用户","失败",e.getMessage());
 					return JSON;
 				}
 			}
@@ -118,8 +118,10 @@ public class UserAction extends BaseAction {
 				u.setId(Long.valueOf(userId));
 				userService.deleteUser(u);
 			}
+			addLog(getSessionUser().getUserName(),"删除用户","成功",null);
 			putJson("删除成功");
 		} catch (Exception e) {
+			addLog(getSessionUser().getUserName(),"删除用户","失败",e.getMessage());
 			putJson("删除失败");
 		}
 		return JSON;
@@ -161,10 +163,12 @@ public class UserAction extends BaseAction {
 		User authUser = userService.authUser(user);
 		if (authUser == null) {
 			putJson("用户名或密码错误！");
+			addLog(user.getUserName(),"登录","失败","用户名或密码错误！");
 			return JSON;
 		}
 		if (!ImageCodeGenerator.remeberCode.equals(vcode)) {
 			putJson("验证码错误！");
+			addLog(authUser.getUserName(),"登录","失败","验证码错误！");
 			return JSON;
 		}
 		//获取用户使用的主题
@@ -182,6 +186,7 @@ public class UserAction extends BaseAction {
 		HttpServletRequest request = ServletActionContext.getRequest();
 		authUser.setCurLoginIp(request.getRemoteAddr());
 		userService.updateUser(authUser);
+		addLog(authUser.getUserName(),"登录","成功",null);
 		putJson("SUCCESS");
 		return JSON;
 	}
