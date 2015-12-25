@@ -5,7 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Easy Life | Login</title>
-	<link rel="shortcut icon" type="image/x-icon" href="images/logo.ico" />
+	<link rel="shortcut icon" type="image/x-icon" href="images/net.ico" />
 	<jsp:include page="WEB-INF/jsps/general/general.jsp"></jsp:include>
 <title>测试Ext</title>
 <style type="text/css">
@@ -23,8 +23,10 @@
 		float:right;
 		margin-right:50px;
 		margin-top: 15%;
-		border: 8px #B0C4DE solid;
+		border: 8px #D1EEEE solid;
 		text-align: center;
+		-webkit-border-radius: 15px;
+		-moz-border-radius: 15px;
 	}
 	
 	.inputLebel{
@@ -70,6 +72,59 @@
 	.login-input{
 		padding-left: 20px;
 	}
+	
+	.myButton {
+		-moz-box-shadow:inset 0px 39px 0px -24px #9fb4f2;
+		-webkit-box-shadow:inset 0px 39px 0px -24px #9fb4f2;
+		box-shadow:inset 0px 39px 0px -24px #9fb4f2;
+		background-color:#7892c2;
+		-moz-border-radius:4px;
+		-webkit-border-radius:4px;
+		border-radius:4px;
+		border:1px solid #4e6096;
+		display:inline-block;
+		cursor:pointer;
+		color:#ffffff;
+		font-family:Arial;
+		font-size:15px;
+		padding:6px 15px;
+		text-decoration:none;
+		text-shadow:0px 1px 0px #283966;
+	}
+	.myButton:hover {
+		background-color:#476e9e;
+	}
+	.myButton:active {
+		position:relative;
+		top:1px;
+	}
+	
+	.resetBtn {
+		-moz-box-shadow:inset 0px 39px 0px -24px #ffffff;
+		-webkit-box-shadow:inset 0px 39px 0px -24px #ffffff;
+		box-shadow:inset 0px 39px 0px -24px #ffffff;
+		background-color:#ffffff;
+		-moz-border-radius:4px;
+		-webkit-border-radius:4px;
+		border-radius:4px;
+		border:1px solid #dcdcdc;
+		display:inline-block;
+		cursor:pointer;
+		color:#666666;
+		font-family:Arial;
+		font-size:15px;
+		padding:6px 15px;
+		text-decoration:none;
+		text-shadow:0px 1px 0px #ffffff;
+	}
+	.resetBtn:hover {
+		background-color:#f6f6f6;
+	}
+	.resetBtn:active {
+		position:relative;
+		top:1px;
+	}
+		
 </style>
 </head>
 <body>
@@ -101,8 +156,8 @@
 				</tr>
 				<tr>
 					<td colspan="2" style="text-align: center;">
-						<span class="loginBtn" onclick="sumitForm()">登录</span>
-						<span class="loginBtn" onclick="reset()">重置</span>
+						<a href="javascript:void(0)" class="myButton" onclick="sumitForm()" id="submitBtn">登录</a>
+						<a href="javascript:void(0)" class="resetBtn" onclick="reset()">重置</a>
 						<button type="reset" class="loginBtn" onclick="reloadImg()" style="display: none;" id="resetBtn"></button><br>
 					</td>
 				</tr>
@@ -140,7 +195,7 @@
 	
 	$(document).bind("keydown",function(event){
 		if(event.keyCode==13){
-			sumitForm();
+			$("#submitBtn").click();
 		}
 	});
 	

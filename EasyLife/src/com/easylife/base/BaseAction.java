@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.struts2.ServletActionContext;
 
 import com.easylife.domain.SystemLog;
 import com.easylife.domain.User;
@@ -30,10 +31,12 @@ public class BaseAction extends ActionSupport {
 	protected SystemLogService logService;
 	
 	protected void addLog(String user, String operation, String operationResult, String causation){
+		String ip = ServletActionContext.getRequest().getRemoteAddr();
 		SystemLog log = new SystemLog();
 		log.setOperation(operation);
 		log.setOperationResult(operationResult);
 		log.setUser(user);
+		log.setOperationIp(ip);
 		if(StringUtils.isNotBlank(causation)){
 			log.setCausation(causation);
 		}

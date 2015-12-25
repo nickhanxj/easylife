@@ -6,11 +6,14 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Easy Life</title>
-	<link rel="shortcut icon" type="image/x-icon" href="images/logo.ico" />
+	<link rel="shortcut icon" type="image/x-icon" href="images/net.ico" />
 	<jsp:include page="/WEB-INF/jsps/general/general.jsp"></jsp:include>
 	<link rel="stylesheet" href="js/layer/skin/layer.css" type="text/css" media="screen" />
 	<script type="text/javascript" src="js/layer/layer.js"></script>
 	<script type="text/javascript" src="js/layer/extend/layer.ext.js"></script>
+	<script type="text/javascript" src="js/Highcharts-4.0.3/js/highcharts.js"></script>
+	<script type="text/javascript" src="js/Highcharts-4.0.3/js/highcharts-3d.js"></script>
+	<script type="text/javascript" src="js/Highcharts-4.0.3/js/modules/exporting.js"></script>
 <title>测试Ext</title>
 <style type="text/css">
 	.welcome{
@@ -49,6 +52,14 @@
 	}
 	li:HOVER {
 		background-color: #1E90FF;
+	}
+	
+	td{
+		width: 50%;
+	}
+	
+	.tabHead{
+		padding-left: 20px;
 	}
 </style>
 </head>
@@ -102,15 +113,26 @@
 	</div>
 	<div data-options="region:'center'" id="mainArea" class="easyui-tabs">
 		<div title="首页" style="padding:10px">
-			<div style="margin-left: auto; margin-right: auto; text-align: center; margin-top: 200px;">
-				<table style="margin-left: auto; margin-right: auto;">
+			<div style="margin-left: auto; margin-right: auto; text-align: center;">
+				<table style="margin-left: auto; margin-right: auto;width: 100%;">
 					<tr>
-						<td style="text-align: right;">当前登录用户：</td>
-						<td style="text-transform: uppercase;"><s:property value="#session.authUser.userName"/></td>
+						<td>
+							<div class="easyui-panel" title="待定" style="height: 300px;">
+							</div>
+						</td>
+						<td>
+							<div class="easyui-panel" title="统计"  style="height: 300px;">
+								<div id="pie" style="height: 266px;"></div>
+							</div>
+						</td>
 					</tr>
 					<tr>
-						<td style="text-align: right;">当前登录IP：</td>
-						<td>127.0.0.1</td>
+						<td>
+							<div class="easyui-panel" title="待定" style="height: 300px;">内容二</div>
+						</td>
+						<td>
+							<div class="easyui-panel" title="待定" style="height: 300px;">待定</div>
+						</td>
 					</tr>
 				</table>
 			</div>
@@ -121,22 +143,22 @@
 		<div style="margin-top: 5px;">欢迎交流：471026023@qq.com</div>
 	</div>
 	<div id="changePassword" class="easyui-window" title="修改密码" data-options="modal:true,closed:true,iconCls:'icon-changepassword'" style="width:500px;padding:10px;">
-		<table class="table table-condensed" style="width: 50%; margin-left: auto; margin-right: auto;">
+		<table class="table table-condensed" style="width: 80%; margin-left: auto; margin-right: auto;">
 			<s:hidden name="id" value="%{#selectedUser.id}"/>
 			<tr>
-				<td class="tabHead">原密码:</td>
+				<td class="tabHead" id="oldPwd">原密码:</td>
 				<td><s:password onblur="checkOriginPasswd(this)" value="%{#selectedUser.userName}" cssClass="form-control edit-input"/></td>
 			</tr>
 			<tr>
-				<td class="tabHead">新密码:</td>
+				<td class="tabHead" id="newPwd">新密码:</td>
 				<td><s:password  id="newPassword" onblur="validatePwd()" value="%{#selectedUser.trueName}" cssClass="form-control edit-input"/></td>
 			</tr>
 			<tr>
-				<td class="tabHead">确认新密码:</td>
+				<td class="tabHead"  id="reNewPwd">确认新密码:</td>
 				<td><s:password  id="reNewPassword" onblur="validatePwd()" value="%{#selectedUser.email}" cssClass="form-control edit-input"/></td>
 			</tr>
 			<tr>
-				<td colspan="2">
+				<td colspan="3">
 					<div style="color: red; font-size: x-small;margin-top: 30px;" align="center" id="errorField">
 					</div>
 					<div style="color: green; font-size: x-small;margin-top: 30px; font-weight: bold;" align="center" id="successField">
@@ -145,7 +167,7 @@
 			</tr>
 			<tr>
 				<td colspan="2" style="text-align: center;">
-					<a href="javascript:void(0)" onclick="resetPassword()" class="easyui-linkbutton" data-options="iconCls:'icon-save'">确认修改</a>&emsp;
+					<a href="javascript:void(0)" id="submitReset" onclick="resetPassword()" class="easyui-linkbutton" data-options="iconCls:'icon-save'">确认修改</a>&emsp;
 					<a href="javascript:void(0)" onclick="$('#changePassword').window('close')" class="easyui-linkbutton">取消</a>
 				</td>
 			</tr>
@@ -194,6 +216,7 @@
 	}
 	
 	$(function(){
+		initPie();
 		getCurTime();
 		setInterval("getCurTime()",1000);
 	});
@@ -233,15 +256,19 @@
 		var rePwd = $("#reNewPassword").val();
 		if(originPwd.length < 6){
 			$("#errorField").html("密码长度至少大于6位");	
+			showError("newPwd");
 		}else{
 			$("#errorField").html("");
-		}
-		if(originPwd && rePwd){
-			if(originPwd != rePwd){
-				$("#errorField").html("两次输入密码不一致");	
-			}else{
-				$("#errorField").html("");
-				$("#successField").html("请记好密码，以免造成不必要的麻烦！");
+			showOk("newPwd");
+			if(originPwd && rePwd){
+				if(originPwd != rePwd){
+					$("#errorField").html("两次输入密码不一致");	
+					showError("reNewPwd");
+				}else{
+					$("#errorField").html("");
+					$("#successField").html("请记好密码，以免造成不必要的麻烦！");
+					showOk("reNewPwd");
+				}
 			}
 		}
 	}
@@ -261,23 +288,26 @@
 		if(!validateForm()){
 			layer.msg('请将信息填写完整。');
 		}else{
-			var newPassword = $("#newPassword").val();
-			$.ajax({
-				url: 'userAction_resetPwd',
-				type: "POST",
-				data:{"password":newPassword},
-				success: function(data){
-					if(data == 2){
-						$("#errorField").html("密码重置失败！未知错误！请<a href='#'>联系我们</a>！");
-						$("#successField").html("");
-					}else if(data == 1){
-						$("#errorField").html("");
-						$("#successField").html("密码重置成功!");
-						layer.msg('密码重置成功！请重新登录,正在跳转到登录页面...');
-						setInterval("logout()",2000);
+			var inputError = $(".icon-input-error");
+			if(inputError.length == 0){
+				var newPassword = $("#newPassword").val();
+				$.ajax({
+					url: 'userAction_resetPwd',
+					type: "POST",
+					data:{"password":newPassword},
+					success: function(data){
+						if(data == 2){
+							$("#errorField").html("密码重置失败！未知错误！请<a href='#'>联系我们</a>！");
+							$("#successField").html("");
+						}else if(data == 1){
+							$("#errorField").html("");
+							$("#successField").html("密码重置成功!");
+							layer.msg('密码重置成功！请重新登录,正在跳转到登录页面...');
+							setInterval("logout()",2000);
+						}
 					}
-				}
-			});
+				});
+			}
 		}
 	}
 	
@@ -289,14 +319,66 @@
 			data:{"originPassword":originPasswd},
 			success: function(data){
 				if(data == 2){
-					$("#errorField").html("旧密码错误！");
-					$("#successField").html("");
+					showError("oldPwd");
 				}else if(data == 1){
-					$("#errorField").html("");
-					$("#successField").html("旧密码验证通过");
+					showOk("oldPwd");
 				}
 			}
 		});
+	}
+	
+	function showError(elId){
+		$("#"+elId).removeClass("icon-input-ok");
+		$("#"+elId).addClass("icon-input-error");
+	}
+	
+	function showOk(elId){
+		$("#"+elId).removeClass("icon-input-error");
+		$("#"+elId).addClass("icon-input-ok");
+	}
+	
+	function initPie() {
+		var data;
+		$.ajax({
+			url: "costAction_statisticDataForPie",
+			type: "GET",
+			async: false,
+			success: function(rdata){
+				data = rdata;
+			}
+		});
+	    $('#pie').highcharts({
+	        chart: {
+	            type: 'pie',
+	            options3d: {
+					enabled: true,
+	                alpha: 45,
+	                beta: 0
+	            }
+	        },
+	        title: {
+	            text: '本月消费情况'
+	        },
+	        tooltip: {
+	            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+	        },
+	        plotOptions: {
+	            pie: {
+	                allowPointSelect: true,
+	                cursor: 'pointer',
+	                depth: 35,
+	                dataLabels: {
+	                    enabled: true,
+	                    format: '{point.name}'
+	                }
+	            }
+	        },
+	        series: [{
+	            type: 'pie',
+	            name: '本月消费比例',
+	            data: data
+	        }]
+	    });
 	}
 </script>
 </html>

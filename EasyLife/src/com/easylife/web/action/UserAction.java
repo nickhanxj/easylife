@@ -163,12 +163,24 @@ public class UserAction extends BaseAction {
 		User authUser = userService.authUser(user);
 		if (authUser == null) {
 			putJson("用户名或密码错误！");
-			addLog(user.getUserName(),"登录","失败","用户名或密码错误！");
+			if(StringUtils.isNotBlank(user.getUserName())){
+				addLog(user.getUserName(),"帐号登录","失败","用户名或密码错误！");
+			}
 			return JSON;
 		}
 		if (!ImageCodeGenerator.remeberCode.equals(vcode)) {
 			putJson("验证码错误！");
-			addLog(authUser.getUserName(),"登录","失败","验证码错误！");
+			addLog(authUser.getUserName(),"帐号登录","失败","验证码错误！");
+			return JSON;
+		}
+		if(authUser.getType() == 1){
+			putJson("您的帐号非管理员帐号，不能登录后台系统。");
+			addLog(authUser.getUserName(),"帐号登录","失败","非管理员帐号");
+			return JSON;
+		}
+		if(authUser.getStatus() == 0){
+			putJson("帐号异常，请联系管理员。");
+			addLog(authUser.getUserName(),"帐号登录","失败","帐号异常");
 			return JSON;
 		}
 		//获取用户使用的主题
@@ -186,7 +198,7 @@ public class UserAction extends BaseAction {
 		HttpServletRequest request = ServletActionContext.getRequest();
 		authUser.setCurLoginIp(request.getRemoteAddr());
 		userService.updateUser(authUser);
-		addLog(authUser.getUserName(),"登录","成功",null);
+		addLog(authUser.getUserName(),"帐号登录","成功",null);
 		putJson("SUCCESS");
 		return JSON;
 	}

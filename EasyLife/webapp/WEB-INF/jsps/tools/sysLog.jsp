@@ -58,6 +58,7 @@
 		        {field:'operation',title:'操作',width:100},    
 		        {field:'operationResult',title:'操作结果',width:100},
 		        {field:'causation',title:'备注',width:100},
+		        {field:'operationIp',title:'操作ip',width:100},
 		        {field:'operationDate',title:'操作时间',
 		        	 formatter:function(value,row,index){  
                          var unixTimestamp = new Date(value);  

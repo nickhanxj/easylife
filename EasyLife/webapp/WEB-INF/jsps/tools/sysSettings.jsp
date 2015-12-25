@@ -79,7 +79,7 @@
 		for(var i = 0; i < themeArea.length; i++){
 			var themeValue = $(themeArea[i]).attr("class");
 			if(themeValue == ${sysTheme}){
-				$(themeArea[i]).addClass("icon-used");
+				$(themeArea[i]).addClass("icon-inuse");
 				$(themeArea[i]).addClass("usingTheme");
 			}
 		}

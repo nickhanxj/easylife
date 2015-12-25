@@ -131,6 +131,15 @@
 .icon-used{
 	background:url('icons/easylife/used.png') no-repeat left center;
 }
+.icon-inuse{
+	background:url('icons/easylife/inuse.png') no-repeat left center;
+}
+.icon-input-ok{
+	background:url('icons/easylife/input-ok.png') no-repeat left center;
+}
+.icon-input-error{
+	background:url('icons/easylife/input-error.png') no-repeat left center;
+}
 .icon-tool{
 	background:url('icons/easylife/tool.png') no-repeat center center;
 }

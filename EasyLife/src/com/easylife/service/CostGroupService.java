@@ -45,8 +45,10 @@ public class CostGroupService {
 	
 	public void update(CostGroup group, List<GroupMember> selectedMembers){
 		CostGroup foundgroup = groupDao.getById(CostGroup.class, group.getId());
-		String hql = "delete from GroupMember gm where gm.group.id = "+group.getId();
-		memberDao.excuteHqlQuery(hql);
+		List<GroupMember> foundMember = memberDao.findByGroupId(foundgroup.getId());
+		for (GroupMember groupMember : foundMember) {
+			memberDao.delete(groupMember);
+		}
 		
 		for (GroupMember groupMember : selectedMembers) {
 			groupMember.setGroup(foundgroup);

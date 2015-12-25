@@ -8,6 +8,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <jsp:include page="/WEB-INF/jsps/general/general.jsp"></jsp:include>
 <%@taglib prefix="s" uri="/struts-tags"%>
+<link rel="stylesheet" type="text/css" href="css/style.css">
 <title>消费统计信息</title>
 <style type="text/css">
 	/*手机*/
@@ -63,7 +64,7 @@
 	
 	.subTable{
 		border: 1px solid #9AC0CD; 
-		width: 70%; 
+		width: 90%; 
 		margin-left: auto; 
 		margin-right: auto;
 	}
@@ -85,6 +86,9 @@
 	.btn{
 		background-color: #E3E3E3;
 	}
+	a{
+		text-decoration: none;
+	}
 	
 	
 /* 	#searchDiv a:VISITED { */
@@ -103,7 +107,7 @@
 		<div class="body-container">
 			<div style="width: 100%;text-align: right; margin-top: 5px;">
 				<span id="normal">
-				<s:form action="/cost/statistics.html" method="post">
+				<s:form action="costAction_statistics" method="post">
 					<s:select name="year" placeholder="年份" cssClass="searchParam"  value="%{#request.year}"
 					list="#{0:'--选择年--',2010:'2010年',2011:'2011年',2012:'2012年',2013:'2013年',2014:'2014年',2015:'2015年',2016:'2016年',2017:'2017年',2018:'2018年',2019:'2019年',2020:'2020年'}">
 					</s:select>
@@ -128,7 +132,7 @@
 				<h3 style="text-align: center; width: 100%;"><b>统计信息（${cyear}年${cmonth}月）</b></h3>
 				<div style=" width: 80%;margin-left: auto; margin-right: auto;">
 					<table>
-						<tr style="background-color: #8FBC8F">
+						<tr>
 							<th class="textright">统计条目</th>
 							<th class="textcenter">金额(￥)</th>
 						</tr>
@@ -165,7 +169,7 @@
 								<td class="textcenter" id="tempId">
 									<c:set value="${result.statisticResult.costTimes}" var="costtimes"/>
 									${costtimes}
-									<span id="viewPersonCost">(<a href="javascript:void(0);" id="${status.index}_tab_view"  title="点击查看" onclick="tableSlideDown('${status.index}_tab',this)">
+									<span id="viewPersonCost">(<a href="javascript:void(0);" id="${status.index}_tab_view"  title="点击查看" onclick="tableSlideDown('${status.index}_tab')">
 									查看
 									</a>)</span>
 								</td>
@@ -259,7 +263,7 @@
 							</tr>
 							<tr>
 								<td colspan="2">
-									<div style="display: none;" id="${status.index}_tab">
+									<div title="${result.user}的当月消费记录" style="width:1000px;" id="${status.index}_tab"  class="easyui-window" data-options="closed:true,maximized:true,minimizable:false,maximizable:false">
 									<table class="subTable" id="subTable">
 										<tr >
 											<th class="subTableLine">消费人</th>
@@ -310,10 +314,11 @@
 	</div>
 </body>
 <script type="text/javascript">
-	function tableSlideDown(tableId,t){
-		$('#'+tableId).slideDown(1000);
-		$("#"+tableId+"_view").html("收起");
-		$(t).attr("onclick","tableSlideUp('"+tableId+"',this)");
+	function tableSlideDown(tableId){
+		$('#'+tableId).window('open');
+// 		$('#'+tableId).slideDown(1000);
+// 		$("#"+tableId+"_view").html("收起");
+// 		$(t).attr("onclick","tableSlideUp('"+tableId+"',this)");
 	}
 	
 	function tableSlideUp(tableId,t){

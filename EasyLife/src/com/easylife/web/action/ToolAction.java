@@ -42,6 +42,13 @@ public class ToolAction extends BaseAction {
 		Page<SystemLog> logs = logService.getLogs(page, rows, params);
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("total", logs.getTotalRow());
+		for (SystemLog log : logs.getRows()) {
+			if("成功".equals(log.getOperationResult())){
+				log.setOperationResult("<font color='green'>成功</font>");
+			}else{
+				log.setOperationResult("<font color='red'>失败</font>");
+			}
+		}
 		data.put("rows", logs.getRows());
 		putJson(data);
 		return JSON;

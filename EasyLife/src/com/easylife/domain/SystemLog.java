@@ -15,6 +15,7 @@ public class SystemLog {
 	private Long id;
 	private String user;
 	private String operation;
+	private String operationIp;
 	private String operationResult;
 	private String causation = "OK";
 	private Date operationDate = new Date();
@@ -68,6 +69,14 @@ public class SystemLog {
 
 	public void setCausation(String causation) {
 		this.causation = causation;
+	}
+
+	public String getOperationIp() {
+		return operationIp;
+	}
+
+	public void setOperationIp(String operationIp) {
+		this.operationIp = operationIp;
 	}
 
 }

@@ -239,6 +239,32 @@ public class CostRecordAction extends BaseAction {
 		putContext("result", rList);
 		return "statistics";
 	}
+	
+	public String statisticDataForPie(){
+		Calendar calendar = Calendar.getInstance();
+		year = String.valueOf(calendar.get(Calendar.YEAR));
+		month = String.valueOf(calendar.get(Calendar.MONTH)+1);
+		Map<String, Object> monthTotal = recordService.monthTotal(year, month);
+		List<List<Object>> rList = new ArrayList<List<Object>>();
+		for (int i = 1; i <= 3; i++) {
+			List<Object> temp = new ArrayList<Object>();
+			Map<String, Object> statisticResult = recordService.statisticPerson(year, month, i + "");
+			String username = "";
+			if (i == 1) {
+				username = "韩晓军";
+			} else if (i == 2) {
+				username = "胡丰盛";
+			} else if (i == 3) {
+				username = "李洪亮";
+			}
+			temp.add(username);
+			Map<String, Double> data = (Map)statisticResult.get("costTotal");
+			temp.add(data.get("csum"));
+			rList.add(temp);
+		}
+		putJson(rList);
+		return JSON;
+	}
 
 	// 统计信息
 	public String statisticsForEmail() {
