@@ -1,5 +1,6 @@
 package com.easylife.base;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -19,8 +20,8 @@ public class BaseDao<T> {
 		return sessionFactory.getCurrentSession();
 	}
 
-	public void save(T t) {
-		getSession().save(t);
+	public Serializable save(T t) {
+		return getSession().save(t);
 	}
 
 	public void update(T t) {

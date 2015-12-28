@@ -30,6 +30,7 @@ public class AuthInterceptor extends AbstractInterceptor {
 	@Override
 	public String intercept(ActionInvocation invocation) throws Exception {
 		Action action = (Action) invocation.getAction();
+		String method = invocation.getProxy().getMethod();
 		// 如果是com.demo.ssh.action.UnAuthedResourceAction则直接放行：公共访问区域
 		Map<String, Object> session = invocation.getInvocationContext().getSession();
 		if (action instanceof UserAction) {
@@ -38,6 +39,9 @@ public class AuthInterceptor extends AbstractInterceptor {
 		User user = (User) session.get(authUser);
 		if(user == null){
 			return "login";
+		}
+		if(action instanceof CostRecordAction && "statisticsForEmail".endsWith(method)){
+			return invocation.invoke();
 		}
 		return invocation.invoke();
 	}

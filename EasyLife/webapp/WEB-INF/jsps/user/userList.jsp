@@ -138,6 +138,9 @@
 		if(data.length == 0){
 			layer.msg('请选择发送邮件的用户');
 		}else{
+			layer.load(1, {
+			    shade: [0.1,'#fff'] //0.1透明度的白色背景
+			});
 			var ids = "";
 			for(var i = 0; i < data.length; i++){
 				ids += data[i].id+",";
@@ -147,6 +150,7 @@
 				type:"POST",
 				data:{"userIds":ids},
 				success: function(data){
+					layer.closeAll("loading");
 					layer.msg(data);
 				}
 			});
@@ -190,7 +194,12 @@
 		        {field:'email',title:'邮箱',width:100},
 		        {field:'phoneNumber',title:'电话',width:100},
 		        {field:'status',title:'状态',width:100},
-		        {field:'registerDate',title:'注册时间',width:100}
+		        {field:'registerDate',title:'注册时间',
+		        	 formatter:function(value,row,index){  
+                         var unixTimestamp = new Date(value);  
+                         return unixTimestamp.toLocaleString();  
+                         },
+                     width:100}
 		    ]]    
 		});  
 	}

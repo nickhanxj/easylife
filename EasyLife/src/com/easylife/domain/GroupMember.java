@@ -1,14 +1,10 @@
 package com.easylife.domain;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -16,7 +12,7 @@ import javax.persistence.Table;
 public class GroupMember {
 	private Long id;
 	private String memberName;
-	private CostGroup group;
+	private Long group_id;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,14 +33,12 @@ public class GroupMember {
 		this.memberName = memberName;
 	}
 
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "group_id")
-	public CostGroup getGroup() {
-		return group;
+	public Long getGroup_id() {
+		return group_id;
 	}
 
-	public void setGroup(CostGroup group) {
-		this.group = group;
+	public void setGroup_id(Long group_id) {
+		this.group_id = group_id;
 	}
 
 }

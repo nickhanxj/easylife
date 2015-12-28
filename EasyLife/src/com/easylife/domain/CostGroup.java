@@ -1,19 +1,13 @@
 package com.easylife.domain;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Cascade;
 
 /**
  * 消费组
@@ -28,7 +22,8 @@ public class CostGroup {
 	private String groupName;
 	private String mark;
 	private Date createTime = new Date();
-	
+	private String signUser;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false, unique = true)
@@ -63,4 +58,13 @@ public class CostGroup {
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
+
+	public String getSignUser() {
+		return signUser;
+	}
+
+	public void setSignUser(String signUser) {
+		this.signUser = signUser;
+	}
+
 }

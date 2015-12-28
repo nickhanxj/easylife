@@ -14,6 +14,11 @@
 		table th,td{
 			text-align: center;
 		}
+		.authUser{
+			border: 1px gray solid;
+			height: 300px;
+			width: 200px;
+		}
 	</style>
 </head>
 <body>
@@ -23,6 +28,7 @@
 			<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="$('#addRecord').window('open')">新增组</a>
 			<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="getCheckedRecord()">编辑组</a>
 			<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="getCheckedRecordAndDelete()">删除组</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-authUser" plain="true" title="将消费组与用户关联" onclick="getCheckedRecordAndAuth()">授权用户</a>
 		</div>
 	</div>
 	<div id="addRecord" class="easyui-window" title="新增消费组" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:500px;padding:10px;">
@@ -37,7 +43,7 @@
 						<tr>
 							<td>组员：</td>
 							<td>
-								<textarea name="members" placeholder="消费组成员，用逗号(英文)隔开" rows="5" style="width: 145px;"></textarea>
+								<textarea name="members" placeholder="消费组成员，用逗号(英文)隔开" rows="5" style="width: 145px;" id="inputMember"></textarea>
 							</td>
 						</tr>
 						<tr>
@@ -73,7 +79,7 @@
 						<tr>
 							<td>新增组员：</td>
 							<td>
-								<textarea name="members" placeholder="消费组成员，用逗号(英文)隔开" rows="5" style="width: 145px;"></textarea>
+								<textarea name="members" placeholder="消费组成员，用逗号(英文)隔开" rows="5" style="width: 145px;" id="newMembers"></textarea>
 							</td>
 						</tr>
 						<tr>
@@ -91,9 +97,71 @@
 					</table>
 				</form>
 	</div>
+	<div id="authUser" class="easyui-window" title="关联用户" data-options="modal:true,closed:true,iconCls:'icon-authUser',maximizable:false,minimizable:false,collapsible:false" style="width:500px;padding:10px;">
+		<h3 id="curGroup" style="width: 100%; text-align: center;"></h3>
+		<table style="width: 100%;">
+			<tr>
+				<td>所有用户</td>
+				<td></td>
+				<td>已关联用户</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="authUser">
+						<select multiple="multiple" size="12" style="width:200px;height:300px" id="allUser" title="按住Ctl多选">
+							<option value="AL">Alabama</option>
+							<option value="AK">Alaska</option>
+							<option value="AZ">Arizona</option>
+							<option value="AR">Arkansas</option>
+							<option value="CA">California</option>
+						</select>
+					</div>
+				</td>
+				<td>
+					<a href="#" class="easyui-linkbutton" style="width: 50px;" onclick="moveOptions('#allUser','#authUserDiv')">></a><br>
+					<a href="#" class="easyui-linkbutton" style="width: 50px;" onclick="moveAllOptions('#allUser','#authUserDiv')">>></a><br>
+					<a href="#" class="easyui-linkbutton" style="width: 50px;" onclick="moveAllOptions('#authUserDiv','#allUser')"><<</a><br>
+					<a href="#" class="easyui-linkbutton" style="width: 50px;" onclick="moveOptions('#authUserDiv','#allUser')"><</a><br>
+				</td>
+				<td>
+					<div class="authUser">
+						<select multiple="multiple" size="12" style="width:200px;height:300px" id="authUserDiv"  title="按住Ctl多选"></select>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<div style="width: 100%; text-align: center;">
+			<a href="#" class="easyui-linkbutton" iconCls="icon-save">确定</a>
+		</div>
+	</div>
 </body>
 <script type="text/javascript">
+	function moveOptions(e1,e2){
+		var options = $(e1).find("option:selected");
+		for(var i=0;i<options.length;i++){
+			var e = options[i];
+			$(e).attr("selected",false);
+			$(e2).append(e);
+			$(e1+" option[value="+e.value+"]").remove();
+		}
+	}
+	
+	function moveAllOptions(e1,e2){
+		var options = $(e1).find("option");
+		for(var i=0;i<options.length;i++){
+			var e = options[i];
+			$(e).attr("selected",false);
+			$(e2).append(e);
+			$(e1+" option[value="+e.value+"]").remove();
+		}
+	}
+
 	function submitData(){
+		var inputMember = $("#inputMember").val();
+		if(inputMember.indexOf("，") > -1){
+			layer.msg('多个组员之间请用英文状态下的逗号隔开!');
+			return;
+		}
 		$.ajax({
 			url:"groupAction_add",
 			type:"POST",
@@ -163,6 +231,16 @@
 		});
 	}
 	
+	function getCheckedRecordAndAuth(){
+		var data = $("#dg").datagrid("getSelections");
+		if(data.length == 0){
+			layer.msg('请选则需要关联用户的消费组');
+		}else{
+			$("#curGroup").html(data[0].groupName);			
+			$("#authUser").window("open");
+		}
+	}
+	
 	function updateRecord(){
 		var c = $("input:checkbox[name=checkMember]:checked");
 		var cstr = "";
@@ -217,7 +295,7 @@
 		    fit:true,
 			fitColumns:true,
 			rownumbers:true,
-			singleSelect:false,
+			singleSelect:true,
 		    columns:[[    
 				{field:'id',checkbox:true },
 		        {field:'groupName',title:'组名',width:100},  

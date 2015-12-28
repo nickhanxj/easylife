@@ -40,7 +40,7 @@ public class UserAction extends BaseAction {
 	private String userIds;
 
 	public String getImageCode() {
-		String random = ImageCodeGenerator.random(5);
+		String random = ImageCodeGenerator.random(4);
 		ImageCodeGenerator.remeberCode = random;
 		UUID uuid = UUID.randomUUID();
 		try {
@@ -58,7 +58,7 @@ public class UserAction extends BaseAction {
 				}
 			}
 			ImageCodeGenerator.render(random, new FileOutputStream(realPath
-					+ "/imagecode/" + uuid + ".jpg"), 120, 30);
+					+ "/imagecode/" + uuid + ".jpg"), 120, 40);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -151,11 +151,13 @@ public class UserAction extends BaseAction {
 		for (User user : selectedUsers) {
 			receiveUser.add(user.getEmail());
 		}
-		String url = "http://localhost/cost/statisticsForEmail.html";
+		String serverName = ServletActionContext.getRequest().getServerName();
+		int serverPort = ServletActionContext.getRequest().getServerPort();
+		String str = serverName+":"+serverPort;
+		String tableUrl = "http://"+str+"/EasyLife/costAction_statisticsForEmail";
 		String param = "year="+year+"&month="+month;
-		String sendHtml = HttpRequestUtil.sendGet(url, param, null);
-		System.out.println(sendHtml);
-		sendManager.doSendHtmlEmail(year+"年"+month+"月消费账单", sendHtml, receiveUser);
+		String tableHtml = HttpRequestUtil.sendGet(tableUrl, param, null);
+		sendManager.doSendHtmlEmail(year+"年"+month+"月消费账单", tableHtml, receiveUser);
 	}
 
 	public String login() {
@@ -168,7 +170,7 @@ public class UserAction extends BaseAction {
 			}
 			return JSON;
 		}
-		if (!ImageCodeGenerator.remeberCode.equals(vcode)) {
+		if (!ImageCodeGenerator.remeberCode.equalsIgnoreCase(vcode)) {
 			putJson("验证码错误！");
 			addLog(authUser.getUserName(),"帐号登录","失败","验证码错误！");
 			return JSON;

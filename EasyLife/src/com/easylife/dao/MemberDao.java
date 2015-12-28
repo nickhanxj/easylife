@@ -10,6 +10,6 @@ import com.easylife.domain.GroupMember;
 @Repository
 public class MemberDao extends BaseDao<GroupMember>{
 	public List<GroupMember> findByGroupId(Long groupId){
-		return getSession().createQuery("from GroupMember gm where gm.group.id = "+groupId).list();
+		return getSession().createQuery("from GroupMember gm where gm.group_id = "+groupId).list();
 	}
 }

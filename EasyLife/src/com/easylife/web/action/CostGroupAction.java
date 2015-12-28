@@ -29,6 +29,7 @@ public class CostGroupAction extends BaseAction {
 	private int page;
 	private int rows;
 	private String[] checkMember;
+	private String signUsers;
 
 	public String groupList() {
 		return "groupList";
@@ -43,10 +44,11 @@ public class CostGroupAction extends BaseAction {
 			groupDto.setGroupName(group.getGroupName());
 			groupDto.setId(group.getId());
 			groupDto.setMark(group.getMark());
-			List<GroupMember> members = memberService.findByGroupId(group.getId());
+			List<GroupMember> members = memberService.findByGroupId(group
+					.getId());
 			StringBuffer memberStr = new StringBuffer("");
 			for (GroupMember groupMember : members) {
-				memberStr.append(groupMember.getMemberName()+" ");
+				memberStr.append(groupMember.getMemberName() + " ");
 			}
 			groupDto.setMembers(memberStr.toString());
 			records.add(groupDto);
@@ -77,6 +79,18 @@ public class CostGroupAction extends BaseAction {
 		return JSON;
 	}
 
+	public String signUser() {
+		CostGroup foundGroup = groupService.getById(group.getId());
+		foundGroup.setSignUser(signUsers);
+		try {
+			groupService.update(foundGroup, null);
+			putJson(1);
+		} catch (Exception e) {
+			putJson(0);
+		}
+		return JSON;
+	}
+
 	public String update() {
 		try {
 			List<GroupMember> selectedMembers = new ArrayList<GroupMember>();
@@ -88,7 +102,7 @@ public class CostGroupAction extends BaseAction {
 					selectedMembers.add(groupMember);
 				}
 			}
-			if(checkMember != null && checkMember.length > 0){
+			if (checkMember != null && checkMember.length > 0) {
 				for (String checkd : checkMember) {
 					GroupMember groupMember = new GroupMember();
 					groupMember.setMemberName(checkd);
@@ -166,6 +180,14 @@ public class CostGroupAction extends BaseAction {
 
 	public void setCheckMember(String[] checkMember) {
 		this.checkMember = checkMember;
+	}
+
+	public String getSignUsers() {
+		return signUsers;
+	}
+
+	public void setSignUsers(String signUsers) {
+		this.signUsers = signUsers;
 	}
 
 }
