@@ -339,14 +339,14 @@
 	
 	function initPie() {
 		var data;
-		$.ajax({
-			url: "costAction_statisticDataForPie",
-			type: "GET",
-			async: false,
-			success: function(rdata){
-				data = rdata;
-			}
-		});
+// 		$.ajax({
+// 			url: "costAction_statisticDataForPie",
+// 			type: "GET",
+// 			async: false,
+// 			success: function(rdata){
+// 				data = rdata;
+// 			}
+// 		});
 	    $('#pie').highcharts({
 	        chart: {
 	            type: 'pie',

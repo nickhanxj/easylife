@@ -17,7 +17,8 @@ public class CostGroupDto {
 	private String mark;
 	private String createTime;
 	private String members;
-	
+	private String authUser;
+
 	public Long getId() {
 		return id;
 	}
@@ -56,6 +57,14 @@ public class CostGroupDto {
 
 	public void setMembers(String members) {
 		this.members = members;
+	}
+
+	public String getAuthUser() {
+		return authUser;
+	}
+
+	public void setAuthUser(String authUser) {
+		this.authUser = authUser;
 	}
 
 }

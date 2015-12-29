@@ -16,9 +16,14 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
 
 import com.easylife.base.BaseAction;
+import com.easylife.domain.CostGroup;
 import com.easylife.domain.CostRecord;
+import com.easylife.domain.GroupMember;
+import com.easylife.domain.User;
 import com.easylife.domain.dto.CostRecordDto;
+import com.easylife.service.CostGroupService;
 import com.easylife.service.CostRecordService;
+import com.easylife.service.GroupMemberService;
 import com.easylife.service.UserService;
 import com.easylife.util.Page;
 import com.opensymphony.xwork2.ActionContext;
@@ -30,6 +35,10 @@ public class CostRecordAction extends BaseAction {
 	private CostRecordService recordService;
 	@Resource
 	private UserService userService;
+	@Resource
+	private GroupMemberService memberService;
+	@Resource
+	private CostGroupService groupService;
 	private CostRecord record;
 	private String year;
 	private String month;
@@ -42,6 +51,7 @@ public class CostRecordAction extends BaseAction {
 	private Long recordId;
 	private int page;
 	private int rows;
+	private String groupId;
 
 	// 记录列表
 	public String list() {
@@ -149,15 +159,7 @@ public class CostRecordAction extends BaseAction {
 		try {
 			recordService.updateRecord(costRecord);
 			rMap.put(STATUS, STATUS_SUCCESS);
-			String userName = "";
-			if ("1".equals(costRecord.getUser())) {
-				userName = "韩晓军";
-			} else if ("2".equals(costRecord.getUser())) {
-				userName = "胡丰盛";
-			} else if ("3".equals(costRecord.getUser())) {
-				userName = "李洪亮";
-			}
-			String msg = "【" + userName + "】发生于["
+			String msg = "【" + costRecord.getUser() + "】发生于["
 					+ dateFormat.format(costRecord.getCostdate()) + "]的消费为 "
 					+ costRecord.getCost() + " 元的消费记录已结帐！";
 			rMap.put("msg", msg);
@@ -183,39 +185,36 @@ public class CostRecordAction extends BaseAction {
 	
 	// 统计信息
 	public String statisticsTable() {
+		List<CostGroup> groups = groupService.findByUserId(getSessionUser().getId()+"");
 		if(StringUtils.isBlank(year) && StringUtils.isBlank(month)){
 			Calendar calendar = Calendar.getInstance();
 			year = String.valueOf(calendar.get(Calendar.YEAR));
 			month = String.valueOf(calendar.get(Calendar.MONTH)+1);
 		}
-		Map<String, Object> monthTotal = recordService.monthTotal(year, month);
+		Map<String, Object> monthTotal = recordService.monthTotal(year, month, groupId);
 		putContext("monthTotal", monthTotal);
 		List<Map<String, Object>> rList = new ArrayList<Map<String, Object>>();
-		for (int i = 1; i <= 3; i++) {
-			Map<String, Object> rMap = new HashMap<String, Object>();
-			Map<String, Object> statisticResult = recordService
-					.statisticPerson(year, month, i + "");
-			String username = "";
-			if (i == 1) {
-				username = "韩晓军";
-			} else if (i == 2) {
-				username = "胡丰盛";
-			} else if (i == 3) {
-				username = "李洪亮";
+		//获取组内成员
+		if(StringUtils.isNotBlank(groupId)){
+			List<GroupMember> members = memberService.findByGroupId(Long.valueOf(groupId));
+			for (GroupMember groupMember : members) {
+				Map<String, Object> rMap = new HashMap<String, Object>();
+				Map<String, Object> statisticResult = recordService.statisticPerson(year, month, groupMember.getMemberName());
+				rMap.put("user", groupMember.getMemberName());
+				rMap.put("statisticResult", statisticResult);
+				rList.add(rMap);
 			}
-			rMap.put("user", username);
-			rMap.put("statisticResult", statisticResult);
-			rList.add(rMap);
 		}
 		putContext("cyear", year);
 		putContext("cmonth", month);
 		putContext("result", rList);
+		putContext("groups", groups);
 		return "statistics";
 	}
 
 	// 统计信息
 	public String statistics() {
-		Map<String, Object> monthTotal = recordService.monthTotal(year, month);
+		Map<String, Object> monthTotal = recordService.monthTotal(year, month, groupId);
 		putContext("monthTotal", monthTotal);
 		List<Map<String, Object>> rList = new ArrayList<Map<String, Object>>();
 		for (int i = 1; i <= 3; i++) {
@@ -244,7 +243,7 @@ public class CostRecordAction extends BaseAction {
 		Calendar calendar = Calendar.getInstance();
 		year = String.valueOf(calendar.get(Calendar.YEAR));
 		month = String.valueOf(calendar.get(Calendar.MONTH)+1);
-		Map<String, Object> monthTotal = recordService.monthTotal(year, month);
+		Map<String, Object> monthTotal = recordService.monthTotal(year, month, groupId);
 		List<List<Object>> rList = new ArrayList<List<Object>>();
 		for (int i = 1; i <= 3; i++) {
 			List<Object> temp = new ArrayList<Object>();
@@ -268,7 +267,7 @@ public class CostRecordAction extends BaseAction {
 
 	// 统计信息
 	public String statisticsForEmail() {
-		Map<String, Object> monthTotal = recordService.monthTotal(year, month);
+		Map<String, Object> monthTotal = recordService.monthTotal(year, month, groupId);
 		putContext("monthTotal", monthTotal);
 		List<Map<String, Object>> rList = new ArrayList<Map<String, Object>>();
 		for (int i = 1; i <= 3; i++) {
@@ -455,6 +454,14 @@ public class CostRecordAction extends BaseAction {
 
 	public void setRows(int rows) {
 		this.rows = rows;
+	}
+
+	public String getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
 	}
 
 }

@@ -75,4 +75,8 @@ public class CostGroupService {
 		}
 		groupDao.delete(group);
 	}
+	
+	public List<CostGroup> findByUserId(String userId){
+		return groupDao.findByUserId(userId);
+	}
 }

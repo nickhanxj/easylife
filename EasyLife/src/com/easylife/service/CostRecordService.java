@@ -33,8 +33,8 @@ public class CostRecordService {
 		recordDao.updateRecord(record);
 	}
 	
-	public Map<String, Object> monthTotal(String year, String month){
-		return recordDao.monthTotal(year, month);
+	public Map<String, Object> monthTotal(String year, String month, String groupId){
+		return recordDao.monthTotal(year, month, groupId);
 	}
 	
 	public Map<String, Object> statisticPerson(String year, String month, String user){

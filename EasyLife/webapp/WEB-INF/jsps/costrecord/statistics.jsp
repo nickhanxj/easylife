@@ -107,7 +107,13 @@
 		<div class="body-container">
 			<div style="width: 100%;text-align: right; margin-top: 5px;">
 				<span id="normal">
-				<s:form action="costAction_statistics" method="post">
+				<s:form action="costAction_statisticsTable" method="post">
+					<select class="searchParam" name="groupId">
+						<option value="0">--请选择消费组--</option>
+						<c:forEach items="${groups}" var="group">
+							<option value="${group.id}">${group.groupName}</option>
+						</c:forEach>
+					</select>
 					<s:select name="year" placeholder="年份" cssClass="searchParam"  value="%{#request.year}"
 					list="#{0:'--选择年--',2010:'2010年',2011:'2011年',2012:'2012年',2013:'2013年',2014:'2014年',2015:'2015年',2016:'2016年',2017:'2017年',2018:'2018年',2019:'2019年',2020:'2020年'}">
 					</s:select>
@@ -276,15 +282,7 @@
 										<c:forEach items="${result.statisticResult.records}" var="record">
 											<tr>
 												<td class="subTableLine">
-													<c:if test="${record.user == 1}">
-														韩晓军
-													</c:if>
-													<c:if test="${record.user == 2}">
-														胡丰盛
-													</c:if>
-													<c:if test="${record.user == 3}">
-														李洪亮
-													</c:if>
+													${record.user}
 												</td>
 												<td class="subTableLine">${record.cost}</td>
 												<td class="subTableLine">${record.costFor}</td>

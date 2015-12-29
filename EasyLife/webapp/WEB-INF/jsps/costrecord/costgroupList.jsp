@@ -109,19 +109,14 @@
 				<td>
 					<div class="authUser">
 						<select multiple="multiple" size="12" style="width:200px;height:300px" id="allUser" title="按住Ctl多选">
-							<option value="AL">Alabama</option>
-							<option value="AK">Alaska</option>
-							<option value="AZ">Arizona</option>
-							<option value="AR">Arkansas</option>
-							<option value="CA">California</option>
 						</select>
 					</div>
 				</td>
 				<td>
-					<a href="#" class="easyui-linkbutton" style="width: 50px;" onclick="moveOptions('#allUser','#authUserDiv')">></a><br>
-					<a href="#" class="easyui-linkbutton" style="width: 50px;" onclick="moveAllOptions('#allUser','#authUserDiv')">>></a><br>
-					<a href="#" class="easyui-linkbutton" style="width: 50px;" onclick="moveAllOptions('#authUserDiv','#allUser')"><<</a><br>
-					<a href="#" class="easyui-linkbutton" style="width: 50px;" onclick="moveOptions('#authUserDiv','#allUser')"><</a><br>
+					<a href="#" title="关联选中用户" class="easyui-linkbutton" style="width: 50px;" onclick="moveOptions('#allUser','#authUserDiv')">></a><br>
+					<a href="#" title="关联所有用户" class="easyui-linkbutton" style="width: 50px;" onclick="moveAllOptions('#allUser','#authUserDiv')">>></a><br>
+					<a href="#" title="移除所有已关联用户" class="easyui-linkbutton" style="width: 50px;" onclick="moveAllOptions('#authUserDiv','#allUser')"><<</a><br>
+					<a href="#" title="移除选中已关联用户" class="easyui-linkbutton" style="width: 50px;" onclick="moveOptions('#authUserDiv','#allUser')"><</a><br>
 				</td>
 				<td>
 					<div class="authUser">
@@ -131,11 +126,35 @@
 			</tr>
 		</table>
 		<div style="width: 100%; text-align: center;">
-			<a href="#" class="easyui-linkbutton" iconCls="icon-save">确定</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-save" onclick="authUser()">确定</a>
 		</div>
 	</div>
 </body>
 <script type="text/javascript">
+	function authUser(){
+		var group = $("#dg").datagrid("getSelections");
+		var groupId = group[0].id;
+		var users = $("#authUserDiv").find("option");
+		var ids = "-";
+		for(var i = 0; i < users.length; i++){
+			ids += users[i].value+"-";
+		}
+		$.ajax({
+			url:"groupAction_signUser",
+			type:"POST",
+			data:{"signUsers":ids,"group.id":groupId},
+			success:function(data){
+				if(data == 1){
+					layer.msg('授权成功！');
+				}else{
+					layer.msg('授权失败！');
+				}
+				$("#authUser").window('close');
+				initGrid();
+			}
+		});
+	}
+
 	function moveOptions(e1,e2){
 		var options = $(e1).find("option:selected");
 		for(var i=0;i<options.length;i++){
@@ -232,10 +251,27 @@
 	}
 	
 	function getCheckedRecordAndAuth(){
+		$("#allUser").html("");
+		$("#authUserDiv").html("");
 		var data = $("#dg").datagrid("getSelections");
 		if(data.length == 0){
 			layer.msg('请选则需要关联用户的消费组');
 		}else{
+			$.ajax({
+				url:"groupAction_getAuthUser",
+				type:"POST",
+				data:{"group.id":data[0].id},
+				success:function(data){
+					var allUser = data.allUsers;
+					var authedUser = data.authedUsers;
+					for(var i = 0; i < allUser.length; i++){
+						$("#allUser").append('<option value="'+allUser[i].id+'">'+allUser[i].userName+'&ensp;('+allUser[i].trueName+')</option>');
+					}
+					for(var i = 0; i < authedUser.length; i++){
+						$("#authUserDiv").append('<option value="'+authedUser[i].id+'">'+authedUser[i].userName+'&ensp;('+authedUser[i].trueName+')</option>');
+					}
+				}
+			});
 			$("#curGroup").html(data[0].groupName);			
 			$("#authUser").window("open");
 		}
@@ -300,6 +336,7 @@
 				{field:'id',checkbox:true },
 		        {field:'groupName',title:'组名',width:100},  
 		        {field:'members',title:'组员',width:100},  
+		        {field:'authUser',title:'授权用户',width:100},
 		        {field:'createTime',title:'创建时间',width:100},    
 		        {field:'mark',title:'备注',width:100}
 		    ]]    

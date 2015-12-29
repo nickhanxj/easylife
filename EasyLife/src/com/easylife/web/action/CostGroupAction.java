@@ -12,9 +12,11 @@ import org.apache.commons.lang.StringUtils;
 import com.easylife.base.BaseAction;
 import com.easylife.domain.CostGroup;
 import com.easylife.domain.GroupMember;
+import com.easylife.domain.User;
 import com.easylife.domain.dto.CostGroupDto;
 import com.easylife.service.CostGroupService;
 import com.easylife.service.GroupMemberService;
+import com.easylife.service.UserService;
 import com.easylife.util.Page;
 
 public class CostGroupAction extends BaseAction {
@@ -23,6 +25,8 @@ public class CostGroupAction extends BaseAction {
 	private CostGroupService groupService;
 	@Resource
 	private GroupMemberService memberService;
+	@Resource
+	private UserService userService;
 	private CostGroup group;
 	private String members;
 	private String ids;
@@ -51,11 +55,44 @@ public class CostGroupAction extends BaseAction {
 				memberStr.append(groupMember.getMemberName() + " ");
 			}
 			groupDto.setMembers(memberStr.toString());
+			String signUser = group.getSignUser();
+			if(StringUtils.isNotBlank(signUser)){
+				String[] sUsers = signUser.split("-");
+				StringBuffer authUserStr = new StringBuffer("");
+				for (String id : sUsers) {
+					if(StringUtils.isNotBlank(id)){
+						User user = userService.getUserByid(id);
+						authUserStr.append(user.getUserName()+" ");
+					}
+				}
+				groupDto.setAuthUser(authUserStr.toString());
+			}
 			records.add(groupDto);
 		}
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("total", all.getTotalRow());
 		data.put("rows", records);
+		putJson(data);
+		return JSON;
+	}
+	
+	public String getAuthUser(){
+		CostGroup cGroup = groupService.getById(group.getId());
+		String signUser = cGroup.getSignUser();
+		List<User> authedUser = new ArrayList<User>();
+		if(StringUtils.isNotBlank(signUser)){
+			String[] sUsers = signUser.split("-");
+			for (String id : sUsers) {
+				if(StringUtils.isNotBlank(id)){
+					authedUser.add(userService.getUserByid(id));
+				}
+			}
+		}
+		List<User> allUsers = userService.getAllUsers();
+		allUsers.removeAll(authedUser);
+		Map<String, List<User>> data = new HashMap<String, List<User>>();
+		data.put("allUsers", allUsers);
+		data.put("authedUsers", authedUser);
 		putJson(data);
 		return JSON;
 	}
