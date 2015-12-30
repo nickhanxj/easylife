@@ -31,6 +31,7 @@ import com.opensymphony.xwork2.ActionContext;
 @SuppressWarnings("all")
 public class CostRecordAction extends BaseAction {
 	private static final long serialVersionUID = 1L;
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	@Resource
 	private CostRecordService recordService;
 	@Resource
@@ -52,6 +53,7 @@ public class CostRecordAction extends BaseAction {
 	private int page;
 	private int rows;
 	private String groupId;
+	private String ids;
 
 	// 记录列表
 	public String list() {
@@ -85,14 +87,14 @@ public class CostRecordAction extends BaseAction {
 			if(record.getStatus() == 0){
 				recordDto.setStatus("未结");
 			}else if(record.getStatus() == 1){
-				recordDto.setStatus("已结");
+				recordDto.setStatus("<font color='gray'>已结</font>");
 			}
 			recordDto.setUser(record.getUser());
 			if (StringUtils.isNotBlank(record.getAttachment())) {
 				String attachment = record.getAttachment();
-				String img = "'<img src='"
+				String img = "<img src='"
 						+ attachment
-						+ "' width='25px' style='cursor:pointer;' onclick='showImg(this)'>'";
+						+ "' width='25px' style='cursor:pointer;' onclick='showImg(this)'>";
 				recordDto.setAttachment(img);
 			}
 			records.add(recordDto);
@@ -137,10 +139,14 @@ public class CostRecordAction extends BaseAction {
 	// 逻辑删除
 	public String delete() {
 		Map<String, Object> rMap = new HashMap<String, Object>();
-		CostRecord costRecord = recordService.getById(recordId);
-		costRecord.setDeleted(1);
+		String[] idForDelete = ids.split(",");
 		try {
-			recordService.updateRecord(costRecord);
+			for (String id : idForDelete) {
+				CostRecord costRecord = recordService.getById(Long.valueOf(id));
+				costRecord.setDeleted(1);
+				recordService.updateRecord(costRecord);
+				addLog(getSessionUser().getUserName(),"删除：【"+costRecord.getUser()+"在"+dateFormat.format(costRecord.getCostdate())+"的"+costRecord.getCost()+"元的消费】","成功",null);
+			}
 			rMap.put(STATUS, STATUS_SUCCESS);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -153,16 +159,15 @@ public class CostRecordAction extends BaseAction {
 	// 结账
 	public String checkout() {
 		Map<String, Object> rMap = new HashMap<String, Object>();
-		CostRecord costRecord = recordService.getById(recordId);
-		costRecord.setStatus(1);
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		try {
-			recordService.updateRecord(costRecord);
+			String[] idForDelete = ids.split(",");
+			for (String id : idForDelete) {
+				CostRecord costRecord = recordService.getById(Long.valueOf(id));
+				costRecord.setStatus(1);
+				recordService.updateRecord(costRecord);
+				addLog(getSessionUser().getUserName(),"结账：【"+costRecord.getUser()+"在"+dateFormat.format(costRecord.getCostdate())+"的"+costRecord.getCost()+"元的消费】","成功",null);
+			}
 			rMap.put(STATUS, STATUS_SUCCESS);
-			String msg = "【" + costRecord.getUser() + "】发生于["
-					+ dateFormat.format(costRecord.getCostdate()) + "]的消费为 "
-					+ costRecord.getCost() + " 元的消费记录已结帐！";
-			rMap.put("msg", msg);
 		} catch (Exception e) {
 			e.printStackTrace();
 			rMap.put(STATUS, STATUS_ERROR);
@@ -295,20 +300,13 @@ public class CostRecordAction extends BaseAction {
 	// 图形报表
 	public String graphic() {
 		List<Map<String, Object>> rList = new ArrayList<Map<String, Object>>();
-		for (int i = 1; i <= 3; i++) {
+		List<GroupMember> members = memberService.findByGroupId(Long.valueOf(groupId));
+		for (GroupMember groupMember : members) {
 			Map<String, Object> rMap = new HashMap<String, Object>();
-			String username = "";
-			if (i == 1) {
-				username = "韩晓军";
-			} else if (i == 2) {
-				username = "胡丰盛";
-			} else if (i == 3) {
-				username = "李洪亮";
-			}
 			Object[] data = new Object[12];
 			for (int j = 1; j <= 12; j++) {
 				Map<String, Object> statisticResult = recordService
-						.dailyCosyByPerson(year, j + "", i + "");
+						.dailyCosyByPerson(year, j + "", groupMember.getMemberName());
 				Map<String, Object> costTotal = (Map<String, Object>) statisticResult
 						.get("costTotal");
 				Object total = costTotal.get("csum");
@@ -318,8 +316,9 @@ public class CostRecordAction extends BaseAction {
 				data[j - 1] = total;
 			}
 			rMap.put("data", data);
-			rMap.put("name", username);
+			rMap.put("name", groupMember.getMemberName());
 			rList.add(rMap);
+			
 		}
 		putJson(rList);
 		return JSON;
@@ -357,6 +356,12 @@ public class CostRecordAction extends BaseAction {
 
 	// 个人消费图
 	public String personalCostChart() {
+		//获取所有的消费组
+		List<CostGroup> allGroups = groupService.findAll();
+		putContext("groups", allGroups);
+		if(allGroups.size() > 0){
+			putContext("groupId", allGroups.get(0).getId());
+		}
 		return "personalCostChart";
 	}
 
@@ -462,6 +467,14 @@ public class CostRecordAction extends BaseAction {
 
 	public void setGroupId(String groupId) {
 		this.groupId = groupId;
+	}
+
+	public String getIds() {
+		return ids;
+	}
+
+	public void setIds(String ids) {
+		this.ids = ids;
 	}
 
 }

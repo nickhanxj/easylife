@@ -33,7 +33,8 @@
 		<div style="margin-bottom:5px">
 			<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="$('#addRecord').window('open')">新增记录</a>
 			<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true">编辑记录</a>
-			<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除记录</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="getSelectedAndDelete()">删除记录</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-checkout" plain="true" onclick="getSelectedAndCheckout()">结账</a>
 		</div>
 		<div>
 			消费日期: <input class="easyui-datebox" style="width:150px" id="startTime">
@@ -119,11 +120,78 @@
 	</div>
 </body>
 <script type="text/javascript">
+	function getSelectedAndCheckout(){
+		var records = $("#dg").datagrid("getSelections");
+		if(records.length == 0){
+			layer.msg('请选则需要结账的记录');
+		}else{
+			layer.confirm('确认将选中消费记录结账？', {
+				 btn: ['确认结账','取消'] //按钮
+			}, function(){
+				var ids = "";
+				for(var i = 0; i < records.length; i++){
+					ids += records[i].id+",";
+				}
+				$.ajax({
+					url:"costAction_checkout",
+					type:"POST",
+					data:{"ids":ids},
+					success: function(data){
+						if(data.status == 1){
+							layer.msg('结账成功');
+							initGrid();
+						}else{
+							layer.msg('结账失败');
+						}
+					}
+				});
+			}, function(){
+			    
+			});
+		}
+	}
+	
+	function getSelectedAndDelete(){
+		var records = $("#dg").datagrid("getSelections");
+		if(records.length == 0){
+			layer.msg('请选则需要删除的记录');
+		}else{
+			layer.confirm('确认删除选中消费记录？一旦删除,不可恢复!', {
+				 btn: ['确认','取消'] //按钮
+			}, function(){
+				var ids = "";
+				for(var i = 0; i < records.length; i++){
+					ids += records[i].id+",";
+				}
+				$.ajax({
+					url:"costAction_delete",
+					type:"POST",
+					data:{"ids":ids},
+					success: function(data){
+						if(data.status == 1){
+							layer.msg('删除成功');
+							initGrid();
+						}else{
+							layer.msg('删除失败');
+						}
+					}
+				});
+			}, function(){
+			    
+			});
+		}
+	}
+
 	function showImg(img){
 		var imgPath = $(img).attr("src");
-		layer.msg('<img src="'+imgPath+'" width="300px">', {
-		    time: 20000, //20s后自动关闭
-		    btn: ['关闭']
+		layer.open({
+		    type: 1,
+		    title: false,
+		    closeBtn: 1,
+		    area: '900px',
+		    skin: 'layui-layer-nobg', //没有背景色
+		    shadeClose: true,
+		    content: '<img alt="" width="900px;" src="'+imgPath+'">'
 		});
 	}
 

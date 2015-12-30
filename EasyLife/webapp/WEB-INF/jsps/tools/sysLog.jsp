@@ -20,22 +20,15 @@
 	<table id="dg"></table>
 	<div id="tb" style="padding:5px;height:auto">
 		<div style="text-align: right;">
-			<input id="operationParam" placeholder="根据操作模糊查询">
-			<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryData()">搜索</a>
-			<a href="#" class="easyui-linkbutton" onclick="reset()">重置</a>
+			<input id="operationParam" class="easyui-searchbox" data-options="prompt:'根据操作模糊查询',searcher:doSearch">
 		</div>
 	</div>
 </body>
 <script type="text/javascript">
-	function queryData(){
+	function doSearch(value){
 		$("#dg").datagrid('load',{
-			"operation":$("#operationParam").val()
+			"operation":value
 		});
-	}
-	
-	function reset(){
-		$("#operationParam").val("");
-		queryData();
 	}
 
 	$(function(){
@@ -54,9 +47,9 @@
 			singleSelect:false,
 		    columns:[[    
 // 				{field:'id',checkbox:true },
-		        {field:'user',title:'用户',width:100},    
-		        {field:'operation',title:'操作',width:100},    
-		        {field:'operationResult',title:'操作结果',width:100},
+		        {field:'user',title:'操作人',width:100},    
+		        {field:'operation',title:'操作',width:300},    
+		        {field:'operationResult',title:'操作结果',width:50},
 		        {field:'causation',title:'备注',width:100},
 		        {field:'operationIp',title:'操作ip',width:100},
 		        {field:'operationDate',title:'操作时间',

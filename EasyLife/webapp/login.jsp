@@ -23,10 +23,11 @@
 		float:right;
 		margin-right:50px;
 		margin-top: 15%;
-		border: 8px #D1EEEE solid;
+		background: rgba(224, 255, 255, 0.5);
+/* 		background-color:lightblue; */
+/*  	border: 3px #D1EEEE solid;  */
 		text-align: center;
-		-webkit-border-radius: 15px;
-		-moz-border-radius: 15px;
+		border-radius: 15px;
 	}
 	
 	.inputLebel{

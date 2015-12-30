@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -12,9 +13,32 @@
 		.btn{
 			background-color: #E3E3E3;
 		}
+		.costgroup{
+			padding: 5px;
+			background-color: lightgray;
+			margin-left: 5px;
+			text-decoration: none;
+			color: gray;
+		}
+		.costgroup:HOVER {
+			background-color:lightblue;
+			border-radius:5px;
+		}
+		.curGroup{
+			background-color:lightblue;
+			border-radius:5px;
+		}
 	</style>
 </head>
 <body>
+	<c:forEach items="${groups}" var="group">
+		<c:if test="${groupId == group.id}">
+			<a class="costgroup curGroup" href="javascript:void(0)" id="${group.id}" onclick="changeGroup(${group.id}, this)">${group.groupName}</a>
+		</c:if>
+		<c:if test="${groupId != group.id}">
+			<a class="costgroup" href="javascript:void(0)" id="${group.id}" onclick="changeGroup(${group.id}, this)">${group.groupName}</a>
+		</c:if>
+	</c:forEach>
 	<div style="width: 100%; text-align: right;">
 		<select class="easyui-combobox" panelHeight="auto" style="width:100px" id="graphic">
 			<option value="column">柱形</option>
@@ -33,16 +57,26 @@ $(function() {
 	$("#graphic").combobox({
 		editable: false,
 		onChange: function (newVal,oldVal) {
-			init(newVal);
+			var gId = $(".curGroup").attr("id");
+			init(newVal,gId);
 		}
 	});
-	init("column");
+	init("column", ${groupId});
 });
 
-function init(type){
+function changeGroup(groupId, curgroup){
+	var allGroup = $(".costgroup");
+	for(var i = 0; i < allGroup.length; i++){
+		$(allGroup[i]).removeClass("curGroup");
+		$(curgroup).addClass("curGroup");
+	}
+	init("column", groupId);
+}
+
+function init(type, groupId){
 	var data;
 	$.ajax({
-		url: "costAction_graphic?year=2015",
+		url: "costAction_graphic?year=2015&groupId="+groupId,
 		type: "GET",
 		async: false,
 		success: function(rdata){

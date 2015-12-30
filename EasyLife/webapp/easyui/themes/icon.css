@@ -146,6 +146,9 @@
 .icon-input-error{
 	background:url('icons/easylife/input-error.png') no-repeat left center;
 }
+.icon-checkout{
+	background:url('icons/easylife/checkout.png') no-repeat left center;
+}
 .icon-tool{
 	background:url('icons/easylife/tool.png') no-repeat center center;
 }
