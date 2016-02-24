@@ -8,6 +8,7 @@ import java.util.Map;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.CriteriaSpecification;
+import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 
 import com.easylife.base.BaseDao;
@@ -103,4 +104,19 @@ public class CostRecordDao extends BaseDao<CostRecord> {
 		}
 		return false;
 	}
+	
+	public List<Map<String, Object>> staticTotalCostByPersonAndMonth(String year, String month){
+		String sql= "select user,sum(cost) totalCost from t_costrecord where year(costdate) = "+year+" and month(costdate) = "+month+" group by user;";
+		Map<String, Double> rMap = new HashMap<String, Double>();
+		SQLQuery query = getSession().createSQLQuery(sql);
+		return query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
+	}
+	
+	public List<Map<String, Object>> staticCostByDayAndMonth(String year, String month){
+		String sql= "select day(costdate) costdate,sum(cost) dailyCost from t_costrecord where year(costdate) = "+year+" and month(costdate) = "+month+" GROUP BY costdate";
+		Map<String, Double> rMap = new HashMap<String, Double>();
+		SQLQuery query = getSession().createSQLQuery(sql);
+		return query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
+	}
+	
 }

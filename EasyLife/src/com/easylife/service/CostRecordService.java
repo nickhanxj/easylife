@@ -79,4 +79,12 @@ public class CostRecordService {
 	public boolean hasPreDayRecord(String date){
 		return recordDao.hasPreDayRecord(date);
 	}
+	
+	public List<Map<String, Object>> staticTotalCostByPersonAndMonth(String year, String month){
+		return recordDao.staticTotalCostByPersonAndMonth(year, month);
+	}
+	
+	public List<Map<String, Object>> staticCostByDayAndMonth(String year, String month){
+		return recordDao.staticCostByDayAndMonth(year, month);
+	}
 }

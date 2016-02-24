@@ -117,21 +117,22 @@
 				<table style="margin-left: auto; margin-right: auto;width: 100%;">
 					<tr>
 						<td>
-							<div class="easyui-panel" title="待定" style="height: 300px;">
+							<div class="easyui-panel" title="年月消费统计" style="height: 300px;">
+								<div id="column" style="height: 266px;"></div>
 							</div>
 						</td>
+						
 						<td>
-							<div class="easyui-panel" title="统计"  style="height: 300px;">
+							<div class="easyui-panel" title="当月总消费统计"  style="height: 300px;">
 								<div id="pie" style="height: 266px;"></div>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td>
-							<div class="easyui-panel" title="待定" style="height: 300px;">内容二</div>
-						</td>
-						<td>
-							<div class="easyui-panel" title="待定" style="height: 300px;">待定</div>
+						<td colspan="2">
+							<div class="easyui-panel" title="消费走势" style="height: 300px;">
+								<div id="line" style="height: 266px;"></div>
+							</div>
 						</td>
 					</tr>
 				</table>
@@ -216,6 +217,8 @@
 	}
 	
 	$(function(){
+		initColumn();
+		initLine();
 		initPie();
 		getCurTime();
 		setInterval("getCurTime()",1000);
@@ -339,46 +342,156 @@
 	
 	function initPie() {
 		var data;
-// 		$.ajax({
-// 			url: "costAction_statisticDataForPie",
-// 			type: "GET",
-// 			async: false,
-// 			success: function(rdata){
-// 				data = rdata;
-// 			}
-// 		});
-	    $('#pie').highcharts({
-	        chart: {
-	            type: 'pie',
-	            options3d: {
-					enabled: true,
-	                alpha: 45,
-	                beta: 0
-	            }
-	        },
-	        title: {
-	            text: '本月消费情况'
-	        },
-	        tooltip: {
-	            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-	        },
-	        plotOptions: {
-	            pie: {
-	                allowPointSelect: true,
-	                cursor: 'pointer',
-	                depth: 35,
-	                dataLabels: {
-	                    enabled: true,
-	                    format: '{point.name}'
-	                }
-	            }
-	        },
-	        series: [{
-	            type: 'pie',
-	            name: '本月消费比例',
-	            data: data
-	        }]
-	    });
+		$.ajax({
+			url: "costAction_statisticDataForPie",
+			type: "GET",
+			async: false,
+			success: function(rdata){
+				data = rdata;
+			}
+		});
+		var curDate = new Date();
+		var year = curDate.getFullYear();
+		var month = curDate.getMonth()+1;
+		 $('#pie').highcharts({
+		        chart: {
+		            plotBackgroundColor: null,
+		            plotBorderWidth: 1,//null,
+		            plotShadow: false
+		        },
+		        title: {
+		            text: year+'年'+month+'月消费情况'
+		        },
+		        tooltip: {
+		    	    pointFormat: '{series.name}: <b>{point.y}元</b>'
+		        },
+		        plotOptions: {
+		            pie: {
+		                allowPointSelect: true,
+		                cursor: 'pointer',
+		                dataLabels: {
+		                    enabled: true,
+		                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+		                    style: {
+		                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+		                    }
+		                }
+		            }
+		        },
+		        series: [{
+		            type: 'pie',
+		            name: '本月消费',
+		            data: data
+		        }]
+		    });
+	}
+	
+	function initLine(){
+		var categories;
+		var data;
+		$.ajax({
+			url: "costAction_statisticDataForLine",
+			type: "GET",
+			async: false,
+			success: function(rdata){
+				categories = rdata.categories;
+				data = rdata.categoriesData;
+			}
+		});
+		var curDate = new Date();
+		var year = curDate.getFullYear();
+		var month = curDate.getMonth()+1;
+		$('#line').highcharts({
+            chart: {
+                type: 'line'
+            },
+            title: {
+                text: year+'年'+month+'月消费走势'
+            },
+            subtitle: {
+                text: 'easylife.com'
+            },
+            xAxis: {
+                categories: categories
+            },
+            yAxis: {
+                title: {
+                    text: '日消费金额 (￥)'
+                }
+            },
+            plotOptions: {
+                line: {
+                    dataLabels: {
+                        enabled: true
+                    },
+                    enableMouseTracking: false
+                }
+            },
+            series: data
+        });
+	}
+	
+	function initColumn(){
+		$('#column').highcharts({
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '月消费统计'
+            },
+            subtitle: {
+                text: 'easylife.com'
+            },
+            xAxis: {
+                categories: [
+                    '一月',
+                    '二月',
+                    '三月',
+                    '四月',
+                    '五月',
+                    '六月',
+                    '七月',
+                    '八月',
+                    '九月',
+                    '十月',
+                    '十一月',
+                    '十二月'
+                ]
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '消费金额 (￥)'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.1f} 元</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: '韩晓军',
+                data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+    
+            }, {
+                name: '胡丰盛',
+                data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5, 105.0, 104.3, 91.2, 83.5, 106.6, 92.3]
+    
+            }, {
+                name: '李洪亮',
+                data: [48.9, 38.8, 39.3, 41.4, 47.0, 48.3, 59.0, 59.6, 52.4, 65.2, 59.3, 51.2]
+    
+            }]
+        });
 	}
 </script>
 </html>

@@ -244,29 +244,77 @@ public class CostRecordAction extends BaseAction {
 		return "statistics";
 	}
 	
+	
+	//首页饼状图
 	public String statisticDataForPie(){
 		Calendar calendar = Calendar.getInstance();
 		year = String.valueOf(calendar.get(Calendar.YEAR));
 		month = String.valueOf(calendar.get(Calendar.MONTH)+1);
-		Map<String, Object> monthTotal = recordService.monthTotal(year, month, groupId);
-		List<List<Object>> rList = new ArrayList<List<Object>>();
-		for (int i = 1; i <= 3; i++) {
-			List<Object> temp = new ArrayList<Object>();
-			Map<String, Object> statisticResult = recordService.statisticPerson(year, month, i + "");
-			String username = "";
-			if (i == 1) {
-				username = "韩晓军";
-			} else if (i == 2) {
-				username = "胡丰盛";
-			} else if (i == 3) {
-				username = "李洪亮";
+		List<Map<String, Object>> staticTotalCostByPersonAndMonth = recordService.staticTotalCostByPersonAndMonth(year, month);
+		List rtList = new ArrayList();
+		for (Map<String, Object> map : staticTotalCostByPersonAndMonth) {
+			if(map.get("user") != null){
+				List tempList = new ArrayList();
+				tempList.add(map.get("user"));
+				tempList.add(map.get("totalCost"));
+				rtList.add(tempList);
 			}
-			temp.add(username);
-			Map<String, Double> data = (Map)statisticResult.get("costTotal");
-			temp.add(data.get("csum"));
-			rList.add(temp);
 		}
-		putJson(rList);
+		putJson(rtList);
+		return JSON;
+	}
+	
+	//首页折线图
+	public String statisticDataForLine(){
+		Calendar calendar = Calendar.getInstance();
+		year = String.valueOf(calendar.get(Calendar.YEAR));
+		month = String.valueOf(calendar.get(Calendar.MONTH)+1);
+		List<Map<String, Object>> staticTotalCostByPersonAndMonth = recordService.staticCostByDayAndMonth(year, month);
+		Map<String,List> rtMap = new HashMap<String, List>();
+		List categories = new ArrayList();
+		List categoriesData = new ArrayList();
+		for (Map<String, Object> map : staticTotalCostByPersonAndMonth) {
+			if(map.get("costdate") != null){
+				List tempList = new ArrayList();
+				categories.add(map.get("costdate"));
+				categoriesData.add(map.get("dailyCost"));
+			}
+		}
+		rtMap.put("categories", categories);
+		List categoriesDataList = new ArrayList();
+		Map<String,Object> categoriesDataMap = new HashMap<String, Object>();
+		categoriesDataMap.put("name", "每日消费");
+		categoriesDataMap.put("data", categoriesData);
+		categoriesDataList.add(categoriesDataMap);
+		rtMap.put("categoriesData", categoriesDataList);
+		putJson(rtMap);
+		return JSON;
+	}
+	
+	//首页柱状图
+	public String statisticDataForColumn(){
+		Calendar calendar = Calendar.getInstance();
+		year = String.valueOf(calendar.get(Calendar.YEAR));
+		month = String.valueOf(calendar.get(Calendar.MONTH)+1);
+		List rtList = new ArrayList();
+		for (int i = 1; i < 13; i++) {
+			List<Map<String, Object>> staticTotalCostByPersonAndMonth = recordService.staticCostByDayAndMonth(year, i+"");
+			Map<String,List> rtMap = new HashMap<String, List>();
+			List categoriesData = new ArrayList();
+			for (Map<String, Object> map : staticTotalCostByPersonAndMonth) {
+				if(map.get("user") != null){
+					List tempList = new ArrayList();
+					categoriesData.add(map.get("dailyCost"));
+				}
+			}
+			List categoriesDataList = new ArrayList();
+			Map<String,Object> categoriesDataMap = new HashMap<String, Object>();
+			categoriesDataMap.put("name", "每日消费");
+			categoriesDataMap.put("data", categoriesData);
+			categoriesDataList.add(categoriesDataMap);
+			rtMap.put("categoriesData", categoriesDataList);
+		}
+		putJson(rtList);
 		return JSON;
 	}
 
