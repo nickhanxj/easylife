@@ -113,7 +113,7 @@ public class CostRecord {
 		this.deleted = deleted;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "group_id")
 	public CostGroup getCostGroup() {
 		return costGroup;

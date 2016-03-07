@@ -11,303 +11,135 @@
 <link rel="stylesheet" type="text/css" href="css/style.css">
 <title>消费统计信息</title>
 <style type="text/css">
-	/*手机*/
-	@media screen and (max-width:600px){
-		#normal{
-			display: none;
-		}
-		.searchParam{
-			width: 70px; 
-			height:32px;
-		}
-		table tr,td{
-			border: 1px solid #9AC0CD;
-		}
-		#viewPersonCost{
-			display: none;
-		}
+	.generalStatistics{
+		width:70%;
+		margin-left: auto;
+		margin-right: auto;
+		margin-top: 10px;
 	}
-	/*平板*/
-	@media screen and (min-width:600px) and (max-width:960px){
-		.searchParam{
-			width: 100px; 
-			height:32px;
-		}
-		#forPhone{
-			display: none;
-		}
+	.cost-detail{
+		margin-left: auto;
+		margin-right: auto;
 	}
-	/*PC*/
-	@media screen and (min-width:960px){
-		.searchParam{
-			width: 100px; 
-			height:32px;
-		}
-		#forPhone{
-			display: none;
-		}
-	}
-	table {
-		width: 100%; 
-		border: 2px solid #9AC0CD;
-	}
-	table tr{
-		height: 50px;
-	}
-	.textright{
-		text-align: right;
-		width: 30%;
-	}
-	.textcenter{
+	.detail-table{
+		padding: 10px;
 		text-align: center;
+		width: 100%;
+	}
+	.detail-table td{
+		width: 50%;
 	}
 	
 	.subTable{
-		border: 1px solid #9AC0CD; 
-		width: 90%; 
-		margin-left: auto; 
-		margin-right: auto;
+		width: 100%;
+		text-align: center;
+	}
+	.subTable th{
+		border: 1px solid gray;
 	}
 	
-	.subTableLine{
-		border: 1px solid #9AC0CD; 
+	.searchParam{
+		height: 34px;
 	}
-	
-	#tempId a:VISITED {
-		color: #9AC0CD;
-	}
-	#tempId a:HOVER {
-		color: #9AC0CD;
-	}
-	#tempId a:LINK {
-		color: #9AC0CD;
-	}
-	
-	.btn{
-		background-color: #E3E3E3;
-	}
-	a{
-		text-decoration: none;
-	}
-	
-	
-/* 	#searchDiv a:VISITED { */
-/* 		color: gray; */
-/* 	} */
-/* 	#searchDiv a:HOVER { */
-/* 		color: #103858; */
-/* 	} */
-/* 	#searchDiv a:LINK { */
-/* 		color: gray; */
-/* 	} */
 </style>
 </head>
 <body>
 	<div class="main-container">
 		<div class="body-container">
-			<div style="width: 100%;text-align: right; margin-top: 5px;">
-				<span id="normal">
-				<s:form action="costAction_statisticsTable" method="post">
+			<s:form id="searchForm" action="costAction_statisticsTable" method="post">
+				<div style="width: 100%; text-align: right;">
 					<select class="searchParam" name="groupId">
-						<option value="0">--请选择消费组--</option>
 						<c:forEach items="${groups}" var="group">
 							<option value="${group.id}">${group.groupName}</option>
 						</c:forEach>
 					</select>
 					<s:select name="year" placeholder="年份" cssClass="searchParam"  value="%{#request.year}"
-					list="#{0:'--选择年--',2010:'2010年',2011:'2011年',2012:'2012年',2013:'2013年',2014:'2014年',2015:'2015年',2016:'2016年',2017:'2017年',2018:'2018年',2019:'2019年',2020:'2020年'}">
-					</s:select>
-					<s:select name="month" placeholder="月份" cssClass="searchParam" value="%{#request.month}"
-					list="#{0:'--选择月--',1:'1月',2:'2月',3:'3月',4:'4月',5:'5月',6:'6月',7:'7月',8:'8月',9:'9月',10:'10月',11:'11月',12:'12月'}"></s:select>
-					<s:submit value="查看统计信息" cssClass="easyui-linkbutton" cssStyle="height:32px;"/>
-				</s:form>
-				</span>
-				<span id="forPhone" style="text-align: right;">
-				<s:form action="/cost/statistics.html" method="post">
-					<s:select name="year" placeholder="年份" cssClass="searchParam" 
-					list="#{0:'--年--',2010:'2010年',2011:'2011年',2012:'2012年',2013:'2013年',2014:'2014年',2015:'2015年',2016:'2016年',2017:'2017年',2018:'2018年',2019:'2019年',2020:'2020年'}">
-					</s:select>
-					<s:select name="month" placeholder="月份" cssClass="searchParam" 
-					list="#{0:'--月--',1:'1月',2:'2月',3:'3月',4:'4月',5:'5月',6:'6月',7:'7月',8:'8月',9:'9月',10:'10月',11:'11月',12:'12月'}"></s:select>
-					<s:submit value="查看" cssClass="btn btn-small"/>
-				</s:form>
-				</span>
-			</div>
-			<br>
-				<div style="margin-top: 20px;">
-				<h3 style="text-align: center; width: 100%;"><b>统计信息（${cyear}年${cmonth}月）</b></h3>
-				<div style=" width: 80%;margin-left: auto; margin-right: auto;">
-					<table>
+						list="#{0:'--选择年--',2010:'2010年',2011:'2011年',2012:'2012年',2013:'2013年',2014:'2014年',2015:'2015年',2016:'2016年',2017:'2017年',2018:'2018年',2019:'2019年',2020:'2020年'}">
+						</s:select>
+						<s:select name="month" placeholder="月份" cssClass="searchParam" value="%{#request.month}"
+						list="#{0:'--选择月--',1:'1月',2:'2月',3:'3月',4:'4月',5:'5月',6:'6月',7:'7月',8:'8月',9:'9月',10:'10月',11:'11月',12:'12月'}"></s:select>
+						<s:submit value="查看统计信息" cssClass="easyui-linkbutton" cssStyle="height:32px;"/>
+				</div>
+			</s:form>
+			<div class="statistics">
+				<h3 style="width: 100%; text-align: center;">2016年3月7日</h3>
+				<div class="generalStatistics">
+					<div class="easyui-panel cost-detail" title="概况">
+					<table class="detail-table">
 						<tr>
-							<th class="textright">统计条目</th>
-							<th class="textcenter">金额(￥)</th>
+							<td>月总消费</td>
+							<td>${monthTotal.monthTotalExceptSettled} 元</td>
 						</tr>
 						<tr>
-							<td class="textright">月总消费</td>
-							<td class="textcenter"><font color="green">${monthTotal.monthTotal}</font>&emsp;</td>
-						</tr>
-						<tr>
-							<td class="textright">已结算消费总额</td>
-							<td class="textcenter"><font color="green">${monthTotal.monthTotal - monthTotal.monthTotalExceptSettled}</font>&emsp;</td>
-						</tr>
-						<tr>
-							<td class="textright">扣除已结算月总消费</td>
-							<td class="textcenter"><font color="green">${monthTotal.monthTotalExceptSettled}</font>&emsp;</td>
-						</tr>
-						<tr>
-							<td class="textright">人均消费</td>
-							<td class="textcenter">
-								<c:set var="perTotal" value="${monthTotal.monthTotalExceptSettled/3}"/>
-								<font color="green">${perTotal}</font>&emsp;
-							</td>
+							<td>人均消费</td>
+							<td>${monthTotal.monthTotalExceptSettled/count} 元</td>
 						</tr>
 					</table>
+					</div>
 				</div>
-				<div style="width: 80%; text-align: right; margin-left:auto; margin-right:auto; font-weight: normal; margin-top: 10px; font-size: xx-small;color: blue;">
-					注：已结算消费只做历史记录，以便查询。在人均消费和每人当月应付金额的统计中已经扣除已结算消费。
-				</div>
-				<div style=" width: 80%;margin-left: auto; margin-right: auto;">
-					<s:iterator value="result" var="result" status="status">
-						<div>${result.user}:</div>
-						<table>
+				<c:forEach items="${result}" var="result" varStatus="status">
+					<div class="generalStatistics">
+						<div class="easyui-panel cost-detail" title="${result.user}">
+							<table class="detail-table">
 							<tr>
-								<td class="textright">消费总次数：</td>
-								<td class="textcenter" id="tempId">
-									<c:set value="${result.statisticResult.costTimes}" var="costtimes"/>
-									${costtimes}
-									<span id="viewPersonCost">(<a href="javascript:void(0);" id="${status.index}_tab_view"  title="点击查看" onclick="tableSlideDown('${status.index}_tab')">
-									查看
-									</a>)</span>
-								</td>
+								<td>月总消费</td>
+								<td>${result.statisticResult.costTotal.csum} 元</td>
 							</tr>
 							<tr>
-								<td class="textright">消费总额(￥)：</td>
-								<td class="textcenter">
-									<c:if test="${costtimes == 0}">
-										暂无
-									</c:if>
-									<c:if test="${costtimes > 0}">
-										${result.statisticResult.costTotal.csum}
-									</c:if>
-								</td>
+								<td>消费次数</td>
+								<td>${result.statisticResult.costTimes}<a href="javascript:void(0);" onclick="tableSlideDown('${status.index}_tab')">点击详情</a></td>
 							</tr>
 							<tr>
-								<td class="textright">已结算消费金额(￥)：</td>
-								<td class="textcenter">
-									<c:if test="${costtimes == 0}">
-										暂无
+								<td>本月收支情况</td>
+								<td>
+									<c:set var="presult" value="${result.statisticResult.costTotal.csum - (monthTotal.monthTotalExceptSettled/count)}"></c:set>
+									<c:if test="${presult > 0}">
+										<font color="blue" size="5">${presult} 元</font>
 									</c:if>
-									<c:if test="${costtimes > 0}">
-										${result.statisticResult.settledCost}
+									<c:if test="${presult == 0}">
+										<font size="5">收支平衡</font>
 									</c:if>
-								</td>
-							</tr>
-							<tr>
-								<td class="textright">未结算消费金额(￥)：</td>
-								<td class="textcenter">
-									<c:if test="${costtimes == 0}">
-										暂无
+									<c:if test="${presult < 0}">
+										<font color="red" size="5">${presult} 元</font>
 									</c:if>
-									<c:if test="${costtimes > 0}">
-										${result.statisticResult.unsettledCost}
-									</c:if>
-								</td>
-							</tr>
-							<tr>
-								<td class="textright">每次平均消费(￥)：</td>
-								<td class="textcenter">
-									<c:if test="${costtimes == 0}">
-										暂无
-									</c:if>
-									<c:if test="${costtimes > 0}">
-										${result.statisticResult.costTotal.cavg}
-									</c:if>
-								</td>
-							</tr>
-							<tr>
-								<td class="textright">已结算消费数：</td>
-								<td class="textcenter">
-									<c:if test="${costtimes == 0}">
-										暂无
-									</c:if>
-									<c:if test="${costtimes > 0}">
-										${result.statisticResult.settled}
-									</c:if>
-								</td>
-							</tr>
-							<tr>
-								<td class="textright">未结算消费数：</td>
-								<td class="textcenter">
-									<c:if test="${costtimes == 0}">
-										暂无
-									</c:if>
-									<c:if test="${costtimes > 0}">
-										${result.statisticResult.unsettled}
-									</c:if>
-								</td>
-							</tr>
-							<tr style="font-weight: bold;">
-								<c:set var="relCost" value="${result.statisticResult.unsettledCost - perTotal}"/>
-								<c:if test="${relCost > 0}">
-									<td class="textright" style="color:blue;">本月应收(￥)：</td>
-									<td class="textcenter"  style="color:blue;">
-										${relCost}
-									</td>
-								</c:if>
-								<c:if test="${relCost == 0}">
-									<td class="textright" style="color:black;">本月收支平衡：</td>
-									<td class="textcenter"  style="color:black;">
-										${relCost}
-									</td>
-								</c:if>
-								<c:if test="${relCost < 0}">
-									<td class="textright" style="color:red;">本月应付(￥)：</td>
-									<td class="textcenter"  style="color:red;">
-										${relCost}
-									</td>
-								</c:if>
-							</tr>
-							<tr>
-								<td colspan="2">
-									<div title="${result.user}的当月消费记录" style="width:1000px;" id="${status.index}_tab"  class="easyui-window" data-options="closed:true,maximized:true,minimizable:false,maximizable:false">
-									<table class="subTable" id="subTable">
-										<tr >
-											<th class="subTableLine">消费人</th>
-											<th class="subTableLine">消费金额（元）</th>
-											<th class="subTableLine">消费用途</th>
-											<th class="subTableLine">消费时间</th>
-											<th class="subTableLine">状态</th>
-											<th class="subTableLine">备注</th>
-										</tr>
-										<c:forEach items="${result.statisticResult.records}" var="record">
-											<tr>
-												<td class="subTableLine">
-													${record.user}
-												</td>
-												<td class="subTableLine">${record.cost}</td>
-												<td class="subTableLine">${record.costFor}</td>
-												<td class="subTableLine">${record.costdate}</td>
-												<td class="subTableLine">
-													<c:if test="${record.status == 0}">
-														未结
-													</c:if>
-													<c:if test="${record.status == 1}">
-														<font color="green">已结</font>
-													</c:if>
-												</td>
-												<td class="subTableLine">${record.mark}</td>
-											</tr>
-										</c:forEach>
-									</table>
-									</div>
 								</td>
 							</tr>
 						</table>
-						<br>
-					</s:iterator>
-				</div>	
+						</div>
+					</div>
+					<div title="${result.user}的当月消费记录" style="width:1000px;" id="${status.index}_tab"  class="easyui-window" data-options="closed:true,maximized:false,minimizable:false,maximizable:false">
+						<table class="subTable" id="subTable">
+							<tr >
+								<th class="subTableLine">消费人</th>
+								<th class="subTableLine">消费金额（元）</th>
+								<th class="subTableLine">消费用途</th>
+								<th class="subTableLine">消费时间</th>
+								<th class="subTableLine">状态</th>
+								<th class="subTableLine">备注</th>
+							</tr>
+							<c:forEach items="${result.statisticResult.records}" var="record">
+								<tr>
+									<td class="subTableLine">
+										${record.user}
+									</td>
+									<td class="subTableLine">${record.cost}</td>
+									<td class="subTableLine">${record.costFor}</td>
+									<td class="subTableLine">${record.costdate}</td>
+									<td class="subTableLine">
+										<c:if test="${record.status == 0}">
+											未结
+										</c:if>
+										<c:if test="${record.status == 1}">
+											<font color="green">已结</font>
+										</c:if>
+									</td>
+									<td class="subTableLine" style="text-align: left;">${record.mark}</td>
+								</tr>
+							</c:forEach>
+						</table>
+						</div>
+				</c:forEach>
 			</div>
-			<br>
 		</div>
 	</div>
 </body>

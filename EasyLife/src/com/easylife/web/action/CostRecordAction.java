@@ -5,8 +5,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -19,7 +21,6 @@ import com.easylife.base.BaseAction;
 import com.easylife.domain.CostGroup;
 import com.easylife.domain.CostRecord;
 import com.easylife.domain.GroupMember;
-import com.easylife.domain.User;
 import com.easylife.domain.dto.CostRecordDto;
 import com.easylife.service.CostGroupService;
 import com.easylife.service.CostRecordService;
@@ -57,6 +58,10 @@ public class CostRecordAction extends BaseAction {
 
 	// 记录列表
 	public String list() {
+		List<CostGroup> groups = groupService.findAll();
+		putContext("groups", groups);
+		List<GroupMember> members = memberService.findByGroupId(groups.get(0).getId());
+		putContext("members", members);
 		return "list";
 	}
 
@@ -74,6 +79,7 @@ public class CostRecordAction extends BaseAction {
 		if (StringUtils.isNotBlank(costFor)) {
 			params.put("costFor", costFor);
 		}
+		params.put("groupId", groupId+"");
 		Page<CostRecord> all = recordService.selectListByPage(page, rows,
 				params);
 		List<CostRecordDto> records = new ArrayList<CostRecordDto>();
@@ -85,9 +91,9 @@ public class CostRecordAction extends BaseAction {
 			recordDto.setCostFor(record.getCostFor());
 			recordDto.setMark(record.getMark());
 			if(record.getStatus() == 0){
-				recordDto.setStatus("未结");
+				recordDto.setStatus("<font color='red'>未结</font>");
 			}else if(record.getStatus() == 1){
-				recordDto.setStatus("<font color='gray'>已结</font>");
+				recordDto.setStatus("<font color='green'>已结</font>");
 			}
 			recordDto.setUser(record.getUser());
 			if (StringUtils.isNotBlank(record.getAttachment())) {
@@ -103,6 +109,23 @@ public class CostRecordAction extends BaseAction {
 		data.put("total", all.getTotalRow());
 		data.put("rows", records);
 		putJson(data);
+		return JSON;
+	}
+	
+	public String getGroupMember(){
+		List<GroupMember> members = memberService.findByGroupId(Long.valueOf(groupId));
+		List<Map<String, Object>> rtList = new ArrayList<Map<String,Object>>();
+		Map<String, Object> m1 = new HashMap<String, Object>();
+		m1.put("id", 0);
+		m1.put("text", "--请选择--");
+		rtList.add(m1);
+		putJson(rtList);
+		for (GroupMember groupMember : members) {
+			Map<String, Object> m = new HashMap<String, Object>();
+			m.put("id", groupMember.getId());
+			m.put("text", groupMember.getMemberName());
+			rtList.add(m);
+		}
 		return JSON;
 	}
 
@@ -190,16 +213,20 @@ public class CostRecordAction extends BaseAction {
 	
 	// 统计信息
 	public String statisticsTable() {
-		List<CostGroup> groups = groupService.findByUserId(getSessionUser().getId()+"");
+		List<CostGroup> groups = groupService.findAll();
 		if(StringUtils.isBlank(year) && StringUtils.isBlank(month)){
 			Calendar calendar = Calendar.getInstance();
 			year = String.valueOf(calendar.get(Calendar.YEAR));
 			month = String.valueOf(calendar.get(Calendar.MONTH)+1);
 		}
-		Map<String, Object> monthTotal = recordService.monthTotal(year, month, groupId);
+//		year = "2015";
+//		month = "12";
+		putContext("groups", groups);
+		Map<String, Object> monthTotal = recordService.monthTotal(year, month, "1");
 		putContext("monthTotal", monthTotal);
 		List<Map<String, Object>> rList = new ArrayList<Map<String, Object>>();
 		//获取组内成员
+//		groupId = "1";
 		if(StringUtils.isNotBlank(groupId)){
 			List<GroupMember> members = memberService.findByGroupId(Long.valueOf(groupId));
 			for (GroupMember groupMember : members) {
@@ -213,6 +240,7 @@ public class CostRecordAction extends BaseAction {
 		putContext("cyear", year);
 		putContext("cmonth", month);
 		putContext("result", rList);
+		putContext("count", rList.size());
 		putContext("groups", groups);
 		return "statistics";
 	}
@@ -276,7 +304,7 @@ public class CostRecordAction extends BaseAction {
 		for (Map<String, Object> map : staticTotalCostByPersonAndMonth) {
 			if(map.get("costdate") != null){
 				List tempList = new ArrayList();
-				categories.add(map.get("costdate"));
+				categories.add(map.get("costdate")+"日");
 				categoriesData.add(map.get("dailyCost"));
 			}
 		}
@@ -295,24 +323,22 @@ public class CostRecordAction extends BaseAction {
 	public String statisticDataForColumn(){
 		Calendar calendar = Calendar.getInstance();
 		year = String.valueOf(calendar.get(Calendar.YEAR));
-		month = String.valueOf(calendar.get(Calendar.MONTH)+1);
 		List rtList = new ArrayList();
-		for (int i = 1; i < 13; i++) {
-			List<Map<String, Object>> staticTotalCostByPersonAndMonth = recordService.staticCostByDayAndMonth(year, i+"");
-			Map<String,List> rtMap = new HashMap<String, List>();
-			List categoriesData = new ArrayList();
-			for (Map<String, Object> map : staticTotalCostByPersonAndMonth) {
-				if(map.get("user") != null){
-					List tempList = new ArrayList();
-					categoriesData.add(map.get("dailyCost"));
-				}
+		List<GroupMember> all = memberService.findAll();
+		Set<String> members = new HashSet();
+		for (GroupMember groupMember : all) {
+			members.add(groupMember.getMemberName());
+		}
+		for (String membername : members) {
+			Map datamap = new HashMap();
+			datamap.put("name", membername);
+			List data = new ArrayList();
+			List<Map<String,Object>> byMonth = recordService.staticCostByMonth(year, membername);
+			for (Map<String, Object> map : byMonth) {
+				data.add(map.get("totalCost"));
 			}
-			List categoriesDataList = new ArrayList();
-			Map<String,Object> categoriesDataMap = new HashMap<String, Object>();
-			categoriesDataMap.put("name", "每日消费");
-			categoriesDataMap.put("data", categoriesData);
-			categoriesDataList.add(categoriesDataMap);
-			rtMap.put("categoriesData", categoriesDataList);
+			datamap.put("data", data);
+			rtList.add(datamap);
 		}
 		putJson(rtList);
 		return JSON;
@@ -383,6 +409,9 @@ public class CostRecordAction extends BaseAction {
 	public String add() {
 		// 保存
 		try {
+			CostGroup group = new CostGroup();
+			group.setId(Long.valueOf(groupId));
+			record.setCostGroup(group);
 			recordService.addRecord(record);
 			putJson(1);
 		} catch (Exception e) {

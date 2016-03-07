@@ -113,7 +113,14 @@ public class CostRecordDao extends BaseDao<CostRecord> {
 	}
 	
 	public List<Map<String, Object>> staticCostByDayAndMonth(String year, String month){
-		String sql= "select day(costdate) costdate,sum(cost) dailyCost from t_costrecord where year(costdate) = "+year+" and month(costdate) = "+month+" GROUP BY costdate";
+		String sql= "select day(costdate) costdate,sum(cost) dailyCost from t_costrecord where year(costdate) = "+year+" and month(costdate) = "+month+" GROUP BY day(costdate)";
+		Map<String, Double> rMap = new HashMap<String, Double>();
+		SQLQuery query = getSession().createSQLQuery(sql);
+		return query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
+	}
+	
+	public List<Map<String, Object>> staticCostByMonth(String year, String membername){
+		String sql= "select user,month(costdate) cmonth, sum(cost) totalCost from t_costrecord where year(costdate) = "+year+"  and user = '"+membername+"' GROUP BY month(costdate) ORDER BY month(costdate)";
 		Map<String, Double> rMap = new HashMap<String, Double>();
 		SQLQuery query = getSession().createSQLQuery(sql);
 		return query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();

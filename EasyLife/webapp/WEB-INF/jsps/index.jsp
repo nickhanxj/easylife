@@ -123,7 +123,7 @@
 						</td>
 						
 						<td>
-							<div class="easyui-panel" title="当月总消费统计"  style="height: 300px;">
+							<div class="easyui-panel" title="本月总消费统计"  style="height: 300px;">
 								<div id="pie" style="height: 266px;"></div>
 							</div>
 						</td>
@@ -432,12 +432,23 @@
 	}
 	
 	function initColumn(){
+		var data;
+		$.ajax({
+			url: "costAction_statisticDataForColumn",
+			type: "GET",
+			async: false,
+			success: function(rdata){
+				data = rdata;
+			}
+		});
+		var curDate = new Date();
+		var year = curDate.getFullYear();
 		$('#column').highcharts({
             chart: {
                 type: 'column'
             },
             title: {
-                text: '月消费统计'
+                text: year+'年每月消费统计'
             },
             subtitle: {
                 text: 'easylife.com'
@@ -465,7 +476,7 @@
                 }
             },
             tooltip: {
-                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                headerFormat: '<span style="font-size:10px">{point.key}消费情况：</span><table>',
                 pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
                     '<td style="padding:0"><b>{point.y:.1f} 元</b></td></tr>',
                 footerFormat: '</table>',
@@ -478,19 +489,7 @@
                     borderWidth: 0
                 }
             },
-            series: [{
-                name: '韩晓军',
-                data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
-    
-            }, {
-                name: '胡丰盛',
-                data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5, 105.0, 104.3, 91.2, 83.5, 106.6, 92.3]
-    
-            }, {
-                name: '李洪亮',
-                data: [48.9, 38.8, 39.3, 41.4, 47.0, 48.3, 59.0, 59.6, 52.4, 65.2, 59.3, 51.2]
-    
-            }]
+            series: data
         });
 	}
 </script>

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@taglib prefix="s" uri="/struts-tags"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -31,20 +32,26 @@
 	<table id="dg"></table>
 	<div id="tb" style="padding:5px;height:auto">
 		<div style="margin-bottom:5px">
-			<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="$('#addRecord').window('open')">新增记录</a>
-			<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true">编辑记录</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="addRecord()">新增记录</a>
+<!-- 			<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true">编辑记录</a> -->
 			<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="getSelectedAndDelete()">删除记录</a>
 			<a href="#" class="easyui-linkbutton" iconCls="icon-checkout" plain="true" onclick="getSelectedAndCheckout()">结账</a>
 		</div>
 		<div>
+			当前消费组：
+			<select class="easyui-combobox" panelHeight="auto" style="width:150px" id="groupIdSelect">
+				<c:forEach items="${groups}" var="group">
+					<option value="${group.id}">${group.groupName}</option>
+				</c:forEach>
+			</select>
 			消费日期: <input class="easyui-datebox" style="width:150px" id="startTime">
 			到: <input class="easyui-datebox" style="width:150px" id="endTime">
 			消费人: 
 			<select class="easyui-combobox" panelHeight="auto" style="width:100px" id="userName">
-				<option value="0">--请选择--</option>
-				<option value="1">韩晓军</option>
-				<option value="2">胡丰盛</option>
-				<option value="3">李洪亮</option>
+				<option value="--请选择--">--请选择--</option>
+				<c:forEach items="${members}" var="member">
+					<option value="${member.memberName}">${member.memberName}</option>
+				</c:forEach>
 			</select>
 			<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryData()">搜索</a>
 			<a href="#" class="easyui-linkbutton" onclick="reset()">重置</a>
@@ -53,15 +60,12 @@
 	<div id="addRecord" class="easyui-window" title="新增记录" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:500px;padding:10px;">
 				<form id="recordForm" method="post" theme="simple">
 					<input type="hidden" name="record.attachment" id="attachment"/>
+					<input type="hidden" name="groupId" id="rci"/>
 					<table style="width: 100%;">
 						<tr>
 							<td>消费人：</td>
 							<td>
-								<select class="easyui-combobox" panelHeight="auto" style="width:145px" name="record.user" data-options="editable:false">
-									<option value="0">--请选择--</option>
-									<option value="1">韩晓军</option>
-									<option value="2">胡丰盛</option>
-									<option value="3">李洪亮</option>
+								<select class="easyui-combobox" panelHeight="auto" style="width:145px" name="record.user" data-options="editable:false" id="addRecordUser">
 								</select>
 							</td>
 						</tr>
@@ -112,7 +116,7 @@
 						<tr>
 							<td colspan="2">
 								<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'" onclick="submitData()">保存</a>
-								<a href="/cost/list.html" class="easyui-linkbutton">取消</a>
+								<a href="javasctipt:void(0)" class="easyui-linkbutton" onclick="$('#addRecord').window('close')">取消</a>
 							</td>
 						</tr>				
 					</table>
@@ -196,6 +200,7 @@
 	}
 
 	function submitData(){
+		$("#rci").val($("#groupIdSelect").combobox('getValue'));
 		$.ajax({
 			url:"costAction_add",
 			type:"POST",
@@ -221,6 +226,16 @@
 		});
 	}
 	
+	function addRecord(){
+		$('#addRecord').window('open');
+		$('#addRecordUser').combobox({    
+		    url:'costAction_getGroupMember?groupId='+$("#groupIdSelect").combobox('getValue'),    
+		    valueField:'text',    
+		    textField:'text'   
+		}); 
+		$('#addRecordUser').combobox("setValue","--请选择--");
+	}
+	
 	function reset(){
 		$("#startTime").datebox('setValue','');
 		$("#endTime").datebox('setValue','');
@@ -231,12 +246,35 @@
 	$(function(){
 		initGrid();
 		initFileUpload();
+		
+		 $("#groupIdSelect").combobox({  
+	         //相当于html >> select >> onChange事件  
+	         onChange:function(n,o){  
+	        	 initGrid(n);
+	        	 getGroupMember(n);
+	         }  
+	     });
 	});
 	
-	function initGrid(){
+	function getGroupMember(groupId){
+		$('#userName').combobox({    
+		    url:'costAction_getGroupMember?groupId='+groupId,    
+		    valueField:'text',    
+		    textField:'text'   
+		}); 
+		$('#userName').combobox("setValue","--请选择--");
+	}
+	
+	function initGrid(groupId){
+		var curl = 'costAction_listData';
+		if(groupId){
+			curl += '?groupId='+groupId;
+		}else{
+			curl += '?groupId='+$("#groupIdSelect").combobox('getValue');
+		}
 		$('#dg').datagrid({  
 			toolbar:'#tb',
-		    url:'costAction_listData',  
+		    url:curl,  
 		    pagination:true,
 		    method:'POST',
 		    fit:true,

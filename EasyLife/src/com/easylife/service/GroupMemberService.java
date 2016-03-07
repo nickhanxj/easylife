@@ -19,4 +19,8 @@ public class GroupMemberService {
 	public List<GroupMember> findByGroupId(Long groupId){
 		return memberDao.findByGroupId(groupId);
 	}
+	
+	public List<GroupMember> findAll(){
+		return memberDao.selectAll(GroupMember.class);
+	}
 }

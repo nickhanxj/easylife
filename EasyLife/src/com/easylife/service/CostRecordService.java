@@ -57,13 +57,13 @@ public class CostRecordService {
 		if(StringUtils.isNotBlank(params.get("endTime"))){
 			extraParams.append(" and cr.costdate <= '"+params.get("endTime")+"' ");
 		}
-		if(StringUtils.isNotBlank(params.get("user")) && !"0".equals(params.get("user"))){
-			extraParams.append(" and cr.user = "+params.get("user")+" ");
+		if(StringUtils.isNotBlank(params.get("user")) && !"--请选择--".equals(params.get("user"))){
+			extraParams.append(" and cr.user = '"+params.get("user")+"' ");
 		}
 		if(StringUtils.isNotBlank(params.get("costFor"))){
 			extraParams.append(" and cr.costFor like '%"+params.get("costFor")+"%' ");
 		}
-		StringBuffer baseHql = new StringBuffer("from CostRecord cr where cr.deleted = 0 "+extraParams.toString()+" order by cr.costdate desc");
+		StringBuffer baseHql = new StringBuffer("from CostRecord cr where cr.deleted = 0 "+extraParams.toString()+" and cr.costGroup.id="+params.get("groupId")+" order by cr.costdate desc");
 		Page<CostRecord> page = new Page<CostRecord>();
 		page.setCurrentPage(currentPage);
 		page.setPageSize(pageSize);
@@ -86,5 +86,9 @@ public class CostRecordService {
 	
 	public List<Map<String, Object>> staticCostByDayAndMonth(String year, String month){
 		return recordDao.staticCostByDayAndMonth(year, month);
+	}
+	
+	public List<Map<String, Object>> staticCostByMonth(String year, String membername){
+		return recordDao.staticCostByMonth(year, membername);
 	}
 }

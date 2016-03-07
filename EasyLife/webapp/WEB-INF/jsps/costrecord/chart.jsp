@@ -31,14 +31,6 @@
 	</style>
 </head>
 <body>
-	<c:forEach items="${groups}" var="group">
-		<c:if test="${groupId == group.id}">
-			<a class="costgroup curGroup" href="javascript:void(0)" id="${group.id}" onclick="changeGroup(${group.id}, this)">${group.groupName}</a>
-		</c:if>
-		<c:if test="${groupId != group.id}">
-			<a class="costgroup" href="javascript:void(0)" id="${group.id}" onclick="changeGroup(${group.id}, this)">${group.groupName}</a>
-		</c:if>
-	</c:forEach>
 	<div style="width: 100%; text-align: right;">
 		<select class="easyui-combobox" panelHeight="auto" style="width:100px" id="graphic">
 			<option value="column">柱形</option>
@@ -76,13 +68,15 @@ function changeGroup(groupId, curgroup){
 function init(type, groupId){
 	var data;
 	$.ajax({
-		url: "costAction_graphic?year=2015&groupId="+groupId,
+		url: "costAction_statisticDataForColumn",
 		type: "GET",
 		async: false,
 		success: function(rdata){
 			data = rdata;
 		}
 	});
+	var curDate = new Date();
+	var year = curDate.getFullYear();
 
 	chart = new Highcharts.Chart({
 
@@ -96,7 +90,7 @@ function init(type, groupId){
 
 		title: {
 
-		text: '个人消费记录统计图-2015'
+		text: '个人消费记录统计图-'+year
 
 	},
 
