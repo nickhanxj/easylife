@@ -65,6 +65,7 @@
 	.short-cut:HOVER{
 		background-color: #CAE1FF;
 		cursor: pointer;
+		font-weight: bold;
 	}
 </style>
 </head>
@@ -127,7 +128,7 @@
 									<tr>
 										<td style="width: 30%;">
 											<div class="short-cut" onclick="addTab('消费记录', 'costAction_list')">
-												<img alt="" src="images/shortcut/addrecord.png" width="50px">
+												<img alt="" src="images/shortcut/addrecord.png" style="width: 50px">
 												<p>新增消费记录</p>
 											</div>
 										</td>

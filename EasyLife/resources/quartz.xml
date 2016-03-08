@@ -10,7 +10,7 @@ xsi:schemaLocation="
     
     <!-- 自动填充前一天无消费记录 -->
     <!-- 执行定时任务业务的类 -->    
-	<bean id="checkPreDayCost" class="com.demo.ssh.quartz.CheckPreDayCostQuartz"></bean>
+	<bean id="checkPreDayCost" class="com.easylife.quartz.CheckPreDayCostQuartz"></bean>
 	<!-- spring管理定时任务的类 -->
 	<bean id="jobTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<!-- 调用的类 -->
@@ -21,12 +21,12 @@ xsi:schemaLocation="
 	<!-- 定义触发时间 -->
 	<bean id="checkTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="jobTask"/>
-		<!-- 每天晚上12点30执行 -->
+		<!-- 每天晚上1点执行 -->
 		<property name="cronExpression" value="0 0 1 * * ?"></property>
 	</bean>
 	
 	<!-- 定时发送邮件 -->
-	<bean id="mailSender" class="com.demo.ssh.quartz.MailSendQuartz"></bean>
+	<bean id="mailSender" class="com.easylife.quartz.MailSendQuartz"></bean>
 	<!-- spring管理定时任务的类 -->
 	<bean id="sendTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<!-- 调用的类 -->
@@ -46,7 +46,7 @@ xsi:schemaLocation="
 		<property name="triggers">
            <list>
             <ref local="checkTime" />
-            <ref local="sendTime" />
+<!--             <ref local="sendTime" /> -->
            </list>
         </property>
 	</bean>
