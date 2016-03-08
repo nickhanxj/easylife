@@ -23,6 +23,17 @@
 				<div style="text-align: center; padding-top: 5px;">
 					<table class="table table-condensed" style="width: 50%; margin-left: auto; margin-right: auto;">
 						<tr>
+							<td class="tabHead">帐号状态:</td>
+							<td>
+								<s:if test="#selectedUser.status == 1">
+									正常
+								</s:if>
+								<s:else>
+									<font color="red">异常:</font>
+								</s:else>
+							</td>
+						</tr>
+						<tr>
 							<td class="tabHead">用户名:</td>
 							<td>${selectedUser.userName}</td>
 						</tr>
@@ -46,17 +57,6 @@
 								</s:if>
 								<s:else>
 									女
-								</s:else>
-							</td>
-						</tr>
-						<tr>
-							<td class="tabHead">帐号状态:</td>
-							<td>
-								<s:if test="#selectedUser.status == 1">
-									正常
-								</s:if>
-								<s:else>
-									<font color="red">异常:</font>
 								</s:else>
 							</td>
 						</tr>

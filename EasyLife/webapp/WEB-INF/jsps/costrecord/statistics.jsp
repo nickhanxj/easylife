@@ -7,6 +7,7 @@
 <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <jsp:include page="/WEB-INF/jsps/general/general.jsp"></jsp:include>
+<script type="text/javascript" src="easyui/locale/easyui-lang-zh_CN.js"></script>
 <%@taglib prefix="s" uri="/struts-tags"%>
 <link rel="stylesheet" type="text/css" href="css/style.css">
 <title>消费统计信息</title>
@@ -41,18 +42,47 @@
 	.searchParam{
 		height: 34px;
 	}
+	
+	.group-list{
+		padding: 5px;
+		background-color: lightgray;; 
+		border: 1px solid gray;
+		border-radius: 5px;
+	}
+	
+	.group-list:HOVER {
+		font-weight: bold;;
+		background-color: #8DB6CD;
+		cursor: pointer;
+	}
+	
+	.cur-group{
+		background-color: #8DB6CD;
+	}
+	
+	.sys-info{
+		text-align: center;
+		font-size: large;
+		color: red;
+	}
 </style>
 </head>
 <body>
 	<div class="main-container">
 		<div class="body-container">
+			<div style="width: 100%; text-align: center;">
+				<c:forEach items="${groups}" var="group">
+					<c:if test="${group.id == groupId}">
+						<span class="group-list cur-group" onclick="selectGroup(this,${group.id})">${group.groupName}</span>
+					</c:if>
+					<c:if test="${group.id != groupId}">
+						<span class="group-list" onclick="selectGroup(this,${group.id})">${group.groupName}</span>
+					</c:if>
+				</c:forEach>
+			</div>
 			<s:form id="searchForm" action="costAction_statisticsTable" method="post">
+				<input type="hidden" id="sGroupId" name="groupId" value="${groupId}">
 				<div style="width: 100%; text-align: right;">
-					<select class="searchParam" name="groupId">
-						<c:forEach items="${groups}" var="group">
-							<option value="${group.id}">${group.groupName}</option>
-						</c:forEach>
-					</select>
 					<s:select name="year" placeholder="年份" cssClass="searchParam"  value="%{#request.year}"
 						list="#{0:'--选择年--',2010:'2010年',2011:'2011年',2012:'2012年',2013:'2013年',2014:'2014年',2015:'2015年',2016:'2016年',2017:'2017年',2018:'2018年',2019:'2019年',2020:'2020年'}">
 						</s:select>
@@ -62,7 +92,7 @@
 				</div>
 			</s:form>
 			<div class="statistics">
-				<h3 style="width: 100%; text-align: center;">2016年3月7日</h3>
+				<h3 style="width: 100%; text-align: center;">${cyear}年${cmonth}月</h3>
 				<div class="generalStatistics">
 					<div class="easyui-panel cost-detail" title="概况">
 					<table class="detail-table">
@@ -77,6 +107,7 @@
 					</table>
 					</div>
 				</div>
+				<c:if test="${not empty monthTotal.monthTotalExceptSettled }">
 				<c:forEach items="${result}" var="result" varStatus="status">
 					<div class="generalStatistics">
 						<div class="easyui-panel cost-detail" title="${result.user}">
@@ -139,6 +170,14 @@
 						</table>
 						</div>
 				</c:forEach>
+				</c:if>
+				<c:if test="${empty monthTotal.monthTotalExceptSettled }">
+					<div class="generalStatistics">
+						<div class="easyui-panel sys-info" title="系统提示">
+							该消费组该月无消费信息！
+						</div>
+					</div>
+				</c:if>
 			</div>
 		</div>
 	</div>
@@ -155,6 +194,15 @@
 		$('#'+tableId).slideUp(1000);
 		$("#"+tableId+"_view").html("查看");
 		$(t).attr("onclick","tableSlideDown('"+tableId+"',this)");
+	}
+	
+	function selectGroup(t, groupId){
+		$("#sGroupId").val(groupId);
+		var groups = $(".group-list");
+		for(var i = 0; i < groups.length; i++){
+			$(groups[i]).removeClass("cur-group");
+		}
+		$(t).addClass("cur-group");
 	}
 </script>
 </html>

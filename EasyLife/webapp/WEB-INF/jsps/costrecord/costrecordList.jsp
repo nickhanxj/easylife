@@ -39,7 +39,7 @@
 		</div>
 		<div>
 			当前消费组：
-			<select class="easyui-combobox" panelHeight="auto" style="width:150px" id="groupIdSelect">
+			<select class="easyui-combobox" panelHeight="auto" style="width:200px" id="groupIdSelect">
 				<c:forEach items="${groups}" var="group">
 					<option value="${group.id}">${group.groupName}</option>
 				</c:forEach>
@@ -58,6 +58,7 @@
 		</div>
 	</div>
 	<div id="addRecord" class="easyui-window" title="新增记录" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:500px;padding:10px;">
+				<h3 style="width: 100%; text-align: center;">当前消费组：<span id="curSelectedGroup"></span></h3>
 				<form id="recordForm" method="post" theme="simple">
 					<input type="hidden" name="record.attachment" id="attachment"/>
 					<input type="hidden" name="groupId" id="rci"/>
@@ -227,6 +228,7 @@
 	}
 	
 	function addRecord(){
+		$("#curSelectedGroup").html($("#groupIdSelect").combobox('getText'));
 		$('#addRecord').window('open');
 		$('#addRecordUser').combobox({    
 		    url:'costAction_getGroupMember?groupId='+$("#groupIdSelect").combobox('getValue'),    

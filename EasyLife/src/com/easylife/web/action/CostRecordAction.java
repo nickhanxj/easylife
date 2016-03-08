@@ -219,14 +219,14 @@ public class CostRecordAction extends BaseAction {
 			year = String.valueOf(calendar.get(Calendar.YEAR));
 			month = String.valueOf(calendar.get(Calendar.MONTH)+1);
 		}
-//		year = "2015";
-//		month = "12";
+		if(StringUtils.isBlank(groupId)){
+			groupId = groups.get(0).getId()+"";
+		}
 		putContext("groups", groups);
-		Map<String, Object> monthTotal = recordService.monthTotal(year, month, "1");
+		Map<String, Object> monthTotal = recordService.monthTotal(year, month, groupId);
 		putContext("monthTotal", monthTotal);
 		List<Map<String, Object>> rList = new ArrayList<Map<String, Object>>();
 		//获取组内成员
-//		groupId = "1";
 		if(StringUtils.isNotBlank(groupId)){
 			List<GroupMember> members = memberService.findByGroupId(Long.valueOf(groupId));
 			for (GroupMember groupMember : members) {
@@ -242,6 +242,7 @@ public class CostRecordAction extends BaseAction {
 		putContext("result", rList);
 		putContext("count", rList.size());
 		putContext("groups", groups);
+		putContext("groupId", groupId);
 		return "statistics";
 	}
 

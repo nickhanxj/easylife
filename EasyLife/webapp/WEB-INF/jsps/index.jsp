@@ -61,6 +61,11 @@
 	.tabHead{
 		padding-left: 20px;
 	}
+	
+	.short-cut:HOVER{
+		background-color: #CAE1FF;
+		cursor: pointer;
+	}
 </style>
 </head>
 <body class="easyui-layout">
@@ -93,8 +98,8 @@
 			</div>
 			<div title="统计" data-options="iconCls:'icon-statistics'" style="overflow:auto;padding:10px;">
 				<ul>
-					<li class="icon-form" onclick="addTab('消费统计-表格', 'costAction_statisticsTable')">消费统计-表格</li>
-					<li class="icon-chart" onclick="addTab('消费统计-图表', 'costAction_personalCostChart')">消费统计-图表</li>
+					<li class="icon-form" onclick="addTab('月消费统计-表格', 'costAction_statisticsTable')">月消费统计-表格</li>
+					<li class="icon-chart" onclick="addTab('年消费统计-图表', 'costAction_personalCostChart')">年消费统计-图表</li>
 				</ul>
 			</div>
 			<div title="常用" data-options="iconCls:'icon-tool'" style="overflow:auto;padding:10px;">
@@ -117,8 +122,41 @@
 				<table style="margin-left: auto; margin-right: auto;width: 100%;">
 					<tr>
 						<td>
-							<div class="easyui-panel" title="年月消费统计" style="height: 300px;">
-								<div id="column" style="height: 266px;"></div>
+							<div class="easyui-panel" title="快捷方式" style="height: 300px;">
+								<table style="width: 100%; height: 100%; text-align: center;">
+									<tr>
+										<td style="width: 30%;">
+											<div class="short-cut" onclick="addTab('消费记录', 'costAction_list')">
+												<img alt="" src="images/shortcut/addrecord.png" width="50px">
+												<p>新增消费记录</p>
+											</div>
+										</td>
+										<td style="width: 30%;">
+											<div class="short-cut" onclick="addTab('年消费统计-图表', 'costAction_personalCostChart')">
+												<img alt="" src="images/shortcut/yearstatistics.png" width="50px">
+												<p>消费年统计图</p>
+											</div>
+										</td>
+										<td style="width: 30%;">
+											<div class="short-cut" onclick="addTab('主题设置', 'toolAction_systemSettings')">
+												<img alt="" src="images/shortcut/theme.png" width="50px">
+												<p>系统主题设置</p>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td style="width: 30%;">
+											<div class="short-cut" onclick="addTab('系统日志', 'toolAction_log')">
+												<img alt="" src="images/shortcut/log.png" width="50px">
+												<p>查看系统日志</p>
+											</div>
+										</td>
+										<td style="width: 30%;">
+										</td>
+										<td style="width: 30%;">
+										</td>
+									</tr>
+								</table>
 							</div>
 						</td>
 						
@@ -217,7 +255,7 @@
 	}
 	
 	$(function(){
-		initColumn();
+// 		initColumn();
 		initLine();
 		initPie();
 		getCurTime();
