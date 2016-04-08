@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -62,10 +63,15 @@
 		padding-left: 20px;
 	}
 	
+	.short-cut{
+		font-size: smaller;
+	}
+	
 	.short-cut:HOVER{
-		background-color: #CAE1FF;
+		background-color: #E8E8E8;
 		cursor: pointer;
 		font-weight: bold;
+		padding-bottom: 3px;
 	}
 </style>
 </head>
@@ -126,19 +132,25 @@
 							<div class="easyui-panel" title="快捷方式" style="height: 300px;">
 								<table style="width: 100%; height: 100%; text-align: center;">
 									<tr>
-										<td style="width: 30%;">
+										<td style="width: 25%;">
 											<div class="short-cut" onclick="addTab('消费记录', 'costAction_list')">
 												<img alt="" src="images/shortcut/addrecord.png" style="width: 50px">
 												<p>新增消费记录</p>
 											</div>
 										</td>
-										<td style="width: 30%;">
+										<td style="width: 25%;">
 											<div class="short-cut" onclick="addTab('年消费统计-图表', 'costAction_personalCostChart')">
 												<img alt="" src="images/shortcut/yearstatistics.png" width="50px">
 												<p>消费年统计图</p>
 											</div>
 										</td>
-										<td style="width: 30%;">
+										<td style="width: 25%;">
+											<div class="short-cut" onclick="addTab('收支情况统计', 'costAction_statisticsTable')">
+												<img alt="" src="images/shortcut/pay.png" width="50px">
+												<p>收支情况统计</p>
+											</div>
+										</td>
+										<td style="width: 25%;">
 											<div class="short-cut" onclick="addTab('主题设置', 'toolAction_systemSettings')">
 												<img alt="" src="images/shortcut/theme.png" width="50px">
 												<p>系统主题设置</p>
@@ -146,15 +158,17 @@
 										</td>
 									</tr>
 									<tr>
-										<td style="width: 30%;">
+										<td style="width: 25%;">
 											<div class="short-cut" onclick="addTab('系统日志', 'toolAction_log')">
 												<img alt="" src="images/shortcut/log.png" width="50px">
 												<p>查看系统日志</p>
 											</div>
 										</td>
-										<td style="width: 30%;">
+										<td style="width: 25%;">
 										</td>
-										<td style="width: 30%;">
+										<td style="width: 25%;">
+										</td>
+										<td style="width: 25%;">
 										</td>
 									</tr>
 								</table>
@@ -162,19 +176,67 @@
 						</td>
 						
 						<td>
-							<div class="easyui-panel" title="本月总消费统计"  style="height: 300px;">
+							<div class="easyui-panel" title="月总消费统计"  style="height: 300px;" data-options="tools:'#pie-toolbar'">
 								<div id="pie" style="height: 266px;"></div>
 							</div>
 						</td>
 					</tr>
 					<tr>
 						<td colspan="2">
-							<div class="easyui-panel" title="消费走势" style="height: 300px;">
+							<div class="easyui-panel" title="消费走势" style="height: 300px;" data-options="tools:'#line-toolbar'">
 								<div id="line" style="height: 266px;"></div>
 							</div>
 						</td>
 					</tr>
 				</table>
+				<div id="line-toolbar">
+					<select onchange="loadLineData()" id="yearVal">
+						<c:forEach begin="2015" end="2020" varStatus="status">
+							<c:if test="${curYear == status.index}">
+								<option value="${status.index}" selected="selected">${status.index}</option>
+							</c:if>
+							<c:if test="${curYear != status.index}">
+								<option value="${status.index}">${status.index}</option>
+							</c:if>
+						</c:forEach>
+					</select>
+					<span>年</span>
+					<select onchange="loadLineData()" id="monthVal">
+						<c:forEach begin="1" end="12" varStatus="status">
+							<c:if test="${curMonth == status.index}">
+								<option value="${status.index}" selected="selected">${status.index}</option>
+							</c:if>
+							<c:if test="${curMonth != status.index}">
+								<option value="${status.index}">${status.index}</option>
+							</c:if>
+						</c:forEach>
+					</select>
+					<span>月</span>
+				</div>
+				<div id="pie-toolbar">
+					<select onchange="loadPieData()" id="yearValPie">
+						<c:forEach begin="2015" end="2020" varStatus="status">
+							<c:if test="${curYear == status.index}">
+								<option value="${status.index}" selected="selected">${status.index}</option>
+							</c:if>
+							<c:if test="${curYear != status.index}">
+								<option value="${status.index}">${status.index}</option>
+							</c:if>
+						</c:forEach>
+					</select>
+					<span>年</span>
+					<select onchange="loadPieData()" id="monthValPie">
+						<c:forEach begin="1" end="12" varStatus="status">
+							<c:if test="${curMonth == status.index}">
+								<option value="${status.index}" selected="selected">${status.index}</option>
+							</c:if>
+							<c:if test="${curMonth != status.index}">
+								<option value="${status.index}">${status.index}</option>
+							</c:if>
+						</c:forEach>
+					</select>
+					<span>月</span>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -257,11 +319,23 @@
 	
 	$(function(){
 // 		initColumn();
-		initLine();
-		initPie();
+		initLine("${curYear}","${curMonth}");
+		initPie("${curYear}","${curMonth}");
 		getCurTime();
 		setInterval("getCurTime()",1000);
 	});
+	
+	function loadLineData(){
+		var year = $("#yearVal").val();
+		var month = $("#monthVal").val();
+		initLine(year,month);
+	}
+	
+	function loadPieData(){
+		var year = $("#yearValPie").val();
+		var month = $("#monthValPie").val();
+		initPie(year,month);
+	}
 	
 	function getCurTime(){
 		var dateStr;
@@ -379,19 +453,16 @@
 		$("#"+elId).addClass("icon-input-ok");
 	}
 	
-	function initPie() {
+	function initPie(year,month) {
 		var data;
 		$.ajax({
-			url: "costAction_statisticDataForPie",
+			url: "costAction_statisticDataForPie?year="+year+"&month="+month,
 			type: "GET",
 			async: false,
 			success: function(rdata){
 				data = rdata;
 			}
 		});
-		var curDate = new Date();
-		var year = curDate.getFullYear();
-		var month = curDate.getMonth()+1;
 		 $('#pie').highcharts({
 		        chart: {
 		            plotBackgroundColor: null,
@@ -425,11 +496,11 @@
 		    });
 	}
 	
-	function initLine(){
+	function initLine(year,month){
 		var categories;
 		var data;
 		$.ajax({
-			url: "costAction_statisticDataForLine",
+			url: "costAction_statisticDataForLine?year="+year+"&month="+month,
 			type: "GET",
 			async: false,
 			success: function(rdata){
@@ -437,9 +508,6 @@
 				data = rdata.categoriesData;
 			}
 		});
-		var curDate = new Date();
-		var year = curDate.getFullYear();
-		var month = curDate.getMonth()+1;
 		$('#line').highcharts({
             chart: {
                 type: 'line'

@@ -142,10 +142,10 @@
 				</tr>
 				<tr>
 					<td rowspan="3"><img alt="" src="images/user.png"> </td>
-					<td style="text-align: left;"><input class="icon-user-login login-input" type="text" placeholder="请输入用户名或邮箱" name="user.userName"></td>
+					<td style="text-align: left;"><input class="icon-user-login login-input" type="text" placeholder="请输入用户名或邮箱" name="user.userName" value="nick"></td>
 				</tr>
 				<tr>
-					<td style="text-align: left;"><input class="icon-password-login login-input" type="password" placeholder="请输入密码" name="user.password"></td>
+					<td style="text-align: left;"><input class="icon-password-login login-input" type="password" placeholder="请输入密码" name="user.password" value="nick471026023"></td>
 				</tr>
 				<tr>
 					<td style="text-align: left;">

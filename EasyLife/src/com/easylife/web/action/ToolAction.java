@@ -18,7 +18,7 @@ import com.easylife.util.Page;
 
 public class ToolAction extends BaseAction {
 	private static final long serialVersionUID = 1L;
-	private Calendar calendar;
+	private static Calendar calendar = Calendar.getInstance();;
 	private String phoneNumber;
 	private String phoneSearchUrl = "http://apis.baidu.com/apistore/mobilephoneservice/mobilephone";
 	private String todayhistoryUrl = "http://apis.baidu.com/netpopo/todayhistory/todayhistory";
@@ -88,6 +88,10 @@ public class ToolAction extends BaseAction {
 	}
 
 	public String index() {
+		String year = String.valueOf(calendar.get(Calendar.YEAR));
+		String month = String.valueOf(calendar.get(Calendar.MONTH)+1);
+		putContext("curYear", year);
+		putContext("curMonth", month);
 		return "index";
 	}
 

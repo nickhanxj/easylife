@@ -7,7 +7,6 @@ import java.util.Date;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.struts2.ServletActionContext;
 
 import com.easylife.domain.CostRecord;
 import com.easylife.domain.SystemLog;
@@ -37,8 +36,8 @@ public class CheckPreDayCostQuartz {
 			costRecord.setDeleted(null);
 			costRecord.setMark("当日无消费记录，此记录为系统自动生成，供消费走势图做统计使用。");
 			recordService.addRecord(costRecord);
-			LoggerManager.info("经检测，[ "+dateFormat.format(dateBefore)+"] 无消费记录，系统已自动生成一条记录供消费走势图做统计使用。");
-			addLog("系统", "新增消费记录", "成功", "当日无任何消费记录，系统新增一条做统计图");
+			LoggerManager.info("经检测，[ "+dateFormat.format(dateBefore)+"] 无新消费记录，系统已自动生成一条记录供消费走势图做统计使用。");
+			addLog("系统", "新增消费记录", "成功", "系统检测到[ "+dateFormat.format(dateBefore)+"] 无新消费记录，已自动生成一条记录供消费走势图做统计使用。");
 		}
 	}
 	

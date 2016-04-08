@@ -277,8 +277,12 @@ public class CostRecordAction extends BaseAction {
 	//首页饼状图
 	public String statisticDataForPie(){
 		Calendar calendar = Calendar.getInstance();
-		year = String.valueOf(calendar.get(Calendar.YEAR));
-		month = String.valueOf(calendar.get(Calendar.MONTH)+1);
+		if(StringUtils.isBlank(year)){
+			year = String.valueOf(calendar.get(Calendar.YEAR));
+		}
+		if(StringUtils.isBlank(month)){
+			month = String.valueOf(calendar.get(Calendar.MONTH)+1);
+		}
 		List<Map<String, Object>> staticTotalCostByPersonAndMonth = recordService.staticTotalCostByPersonAndMonth(year, month);
 		List rtList = new ArrayList();
 		for (Map<String, Object> map : staticTotalCostByPersonAndMonth) {
@@ -296,8 +300,12 @@ public class CostRecordAction extends BaseAction {
 	//首页折线图
 	public String statisticDataForLine(){
 		Calendar calendar = Calendar.getInstance();
-		year = String.valueOf(calendar.get(Calendar.YEAR));
-		month = String.valueOf(calendar.get(Calendar.MONTH)+1);
+		if(StringUtils.isBlank(year)){
+			year = String.valueOf(calendar.get(Calendar.YEAR));
+		}
+		if(StringUtils.isBlank(month)){
+			month = String.valueOf(calendar.get(Calendar.MONTH)+1);
+		}
 		List<Map<String, Object>> staticTotalCostByPersonAndMonth = recordService.staticCostByDayAndMonth(year, month);
 		Map<String,List> rtMap = new HashMap<String, List>();
 		List categories = new ArrayList();
@@ -414,8 +422,10 @@ public class CostRecordAction extends BaseAction {
 			group.setId(Long.valueOf(groupId));
 			record.setCostGroup(group);
 			recordService.addRecord(record);
+			addLog(getSessionUser().getUserName(),"新：【消费人："+record.getUser()+"-消费金额："+record.getCost()+"-用途："+record.getCostFor()+"】","成功",null);
 			putJson(1);
 		} catch (Exception e) {
+			addLog(getSessionUser().getUserName(),"新：【消费人："+record.getUser()+"-消费金额："+record.getCost()+"-用途："+record.getCostFor()+"】","失败",e.getMessage());
 			putJson(0);
 		}
 		return JSON;
